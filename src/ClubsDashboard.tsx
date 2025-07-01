@@ -190,7 +190,7 @@ export default function ClubsDashboard() {
               </div>
             </div>
             
-            {/* Material Design Server Selector */}
+            {/* Material 3 Server Selector */}
             {servers.length > 0 && (
               <select 
                 value={selectedServer} 
@@ -198,7 +198,7 @@ export default function ClubsDashboard() {
                   setSelectedServer(e.target.value)
                   setSelectedClub(null)
                 }}
-                className="bg-white/10 backdrop-blur-md border border-blue-300/30 rounded-xl px-4 py-2.5 pr-8 text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer"
+                className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 px-4 py-2 pr-8 rounded-lg text-sm font-medium transition-all duration-200 border border-blue-400/30 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23bfdbfe%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%2C9%2012%2C15%2018%2C9%22%3E%3C/polyline%3E%3C/svg%3E')] bg-no-repeat bg-[length:16px_16px] bg-[position:right_12px_center]"
               >
                 {servers.map(server => (
                   <option key={server.id} value={server.id} className="bg-slate-800 text-white">

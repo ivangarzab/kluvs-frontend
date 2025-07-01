@@ -80,8 +80,8 @@ export default function CurrentReadingCard({
           </div>
           
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-            <div className="flex items-start justify-between">
-              <div className="flex-1 pr-6">
+            <div className="grid grid-cols-[1fr_auto] gap-6">
+              <div>
                 <h3 className="text-2xl font-bold text-white mb-2 leading-tight">
                   {selectedClub.active_session.book.title}
                 </h3>
@@ -95,46 +95,23 @@ export default function CurrentReadingCard({
                   </p>
                 )}
                 
-                {/* Due Date and Next Discussion Section */}
-                <div className="space-y-3">
-                  {selectedClub.active_session.due_date && (
-                    <div className="flex items-center bg-orange-500/20 rounded-lg px-4 py-3 border border-orange-400/30">
-                      <span className="text-2xl mr-3">⏰</span>
-                      <div>
-                        <p className="text-white font-bold">Due Date</p>
-                        <p className="text-orange-200 text-lg font-semibold">
-                          {new Date(selectedClub.active_session.due_date).toLocaleDateString()}
-                        </p>
-                      </div>
+                {/* Due Date Section */}
+                {selectedClub.active_session.due_date && (
+                  <div className="flex items-center bg-orange-500/20 rounded-lg px-4 py-3 border border-orange-400/30">
+                    <span className="text-2xl mr-3">⏰</span>
+                    <div>
+                      <p className="text-white font-bold">Due Date</p>
+                      <p className="text-orange-200 text-lg font-semibold">
+                        {new Date(selectedClub.active_session.due_date).toLocaleDateString()}
+                      </p>
                     </div>
-                  )}
-                  
-                  {/* Next Discussion */}
-                  {nextDiscussion && (
-                    <div className="flex items-center bg-blue-500/20 rounded-lg px-4 py-3 border border-blue-400/30">
-                      <span className="text-2xl mr-3">💬</span>
-                      <div className="flex-1">
-                        <p className="text-white font-bold">Next Discussion</p>
-                        <p className="text-blue-200 text-lg font-semibold">{nextDiscussion.title}</p>
-                        <div className="flex items-center mt-1 space-x-3">
-                          <p className="text-blue-300 text-sm">
-                            📅 {new Date(nextDiscussion.date).toLocaleDateString()}
-                          </p>
-                          {nextDiscussion.location && (
-                            <p className="text-blue-300 text-sm">
-                              📍 {nextDiscussion.location}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
               
-              {/* Book Cover Placeholder - Right side of book info */}
-              <div className="hidden md:block">
-                <div className="w-32 h-44 bg-gradient-to-b from-orange-400 to-blue-500 rounded-lg shadow-2xl flex items-center justify-center border-4 border-white/20">
+              {/* Book Cover - spans from top to bottom of due date */}
+              <div className="hidden md:flex flex-col justify-end w-32">
+                <div className="w-full h-full bg-gradient-to-b from-orange-400 to-blue-500 rounded-lg shadow-2xl flex items-center justify-center border-4 border-white/20">
                   <div className="text-center text-white">
                     <div className="text-3xl mb-2">📚</div>
                     <div className="text-xs font-bold">BOOK</div>
@@ -143,6 +120,27 @@ export default function CurrentReadingCard({
                 </div>
               </div>
             </div>
+            
+            {/* Next Discussion - full width below grid */}
+            {nextDiscussion && (
+              <div className="mt-3 flex items-center bg-blue-500/20 rounded-lg px-4 py-3 border border-blue-400/30">
+                <span className="text-2xl mr-3">💬</span>
+                <div className="flex-1">
+                  <p className="text-white font-bold">Next Discussion</p>
+                  <p className="text-blue-200 text-lg font-semibold">{nextDiscussion.title}</p>
+                  <div className="flex items-center mt-1 space-x-3">
+                    <p className="text-blue-300 text-sm">
+                      📅 {new Date(nextDiscussion.date).toLocaleDateString()}
+                    </p>
+                    {nextDiscussion.location && (
+                      <p className="text-blue-300 text-sm">
+                        📍 {nextDiscussion.location}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

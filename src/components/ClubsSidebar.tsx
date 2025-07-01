@@ -23,15 +23,15 @@ export default function ClubsSidebar({
             <div>
               <h2 className="text-lg font-bold text-white flex items-center">
                 <span className="mr-2">📚</span>
-                Book Clubs
+                Clubs
               </h2>
               <p className="text-blue-200/70 text-sm">{selectedServerData?.clubs.length || 0} active clubs</p>
             </div>
             <button 
               onClick={onAddClub}
-              className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95 shadow-md"
+              className="bg-orange-500/20 hover:bg-orange-500/30 text-orange-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-orange-400/30"
             >
-              + Add Club
+              Add Club
             </button>
           </div>
         </div>

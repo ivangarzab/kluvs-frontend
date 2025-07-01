@@ -31,7 +31,7 @@ export default function MembersTable({
               onClick={onAddMember}
               className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-blue-400/30"
             >
-              + Add Member
+              Add Member
             </button>
           </div>
         </div>
