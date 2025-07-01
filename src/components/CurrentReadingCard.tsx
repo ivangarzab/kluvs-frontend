@@ -86,7 +86,7 @@ export default function CurrentReadingCard({
                   {selectedClub.active_session.book.title}
                 </h3>
                 <p className="text-xl text-orange-200 mb-3 font-semibold">
-                  by {selectedClub.active_session.book.author}
+                  by {selectedClub.active_session.book.author}{selectedClub.active_session.book.year && ` (${selectedClub.active_session.book.year})`}
                 </p>
                 
                 {selectedClub.active_session.book.edition && (
@@ -111,11 +111,43 @@ export default function CurrentReadingCard({
               
               {/* Book Cover - spans from top to bottom of due date */}
               <div className="hidden md:flex flex-col justify-end w-32">
-                <div className="w-full h-full bg-gradient-to-b from-orange-400 to-blue-500 rounded-lg shadow-2xl flex items-center justify-center border-4 border-white/20">
-                  <div className="text-center text-white">
-                    <div className="text-3xl mb-2">📚</div>
-                    <div className="text-xs font-bold">BOOK</div>
-                    <div className="text-xs">COVER</div>
+                <div className="w-full h-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg shadow-2xl flex flex-col justify-center p-3 relative overflow-hidden">
+                  {/* Subtle gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-orange-500/5 rounded-lg"></div>
+                  
+                  {/* Book content - compact layout */}
+                  <div className="relative z-10 flex flex-col items-center justify-center space-y-2">
+                    {/* Top decorative spine elements - smaller */}
+                    <div className="flex justify-center space-x-1">
+                      <div className="w-0.5 h-3 bg-orange-400/30 rounded-full"></div>
+                      <div className="w-0.5 h-2 bg-blue-400/30 rounded-full"></div>
+                      <div className="w-0.5 h-3 bg-orange-400/30 rounded-full"></div>
+                    </div>
+                    
+                    {/* Book title and author - centered */}
+                    <div className="text-center">
+                      <div className="text-white/90 font-bold text-xs leading-tight mb-1">
+                        {selectedClub.active_session.book.title.length > 20 
+                          ? selectedClub.active_session.book.title.substring(0, 20) + '...'
+                          : selectedClub.active_session.book.title
+                        }
+                      </div>
+                      <div className="text-white/60 text-xs font-medium">
+                        {selectedClub.active_session.book.author.length > 15
+                          ? selectedClub.active_session.book.author.substring(0, 15) + '...'
+                          : selectedClub.active_session.book.author
+                        }
+                      </div>
+                    </div>
+                    
+                    {/* Bottom decorative spine elements - smaller */}
+                    <div className="flex justify-center space-x-1">
+                      <div className="w-0.5 h-3 bg-orange-400/40 rounded-full"></div>
+                      <div className="w-0.5 h-4 bg-blue-400/40 rounded-full"></div>
+                      <div className="w-0.5 h-2 bg-orange-400/40 rounded-full"></div>
+                      <div className="w-0.5 h-4 bg-blue-400/40 rounded-full"></div>
+                      <div className="w-0.5 h-3 bg-orange-400/40 rounded-full"></div>
+                    </div>
                   </div>
                 </div>
               </div>
