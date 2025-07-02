@@ -76,9 +76,14 @@ export default function ClubsDashboard() {
         if (currentSelection && data.servers.find((s: Server) => s.id === currentSelection)) {
           // Preserve selection if the server still exists
           setSelectedServer(currentSelection)
-        } else if (data.servers.length > 0) {
-          // Fallback to first server if current selection doesn't exist or no preservation requested
-          setSelectedServer(data.servers[0].id)
+        } else {
+          // Default to "Blingers' Books" server, fallback to first server
+          const blingersServer = data.servers.find((s: Server) => s.name === "Blingers' Books")
+          if (blingersServer) {
+            setSelectedServer(blingersServer.id)
+          } else if (data.servers.length > 0) {
+            setSelectedServer(data.servers[0].id)
+          }
         }
       }
     } catch (err: unknown) {
@@ -188,7 +193,7 @@ export default function ClubsDashboard() {
             </div>
             
             {/* Material 3 Server Selector */}
-            {servers.length > 0 && (
+            {servers.length > 1 && import.meta.env.VITE_DEV === 'true' && (
               <select 
                 value={selectedServer} 
                 onChange={(e) => {
