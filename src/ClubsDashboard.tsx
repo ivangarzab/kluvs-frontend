@@ -161,10 +161,7 @@ export default function ClubsDashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-slate-900 to-blue-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="relative">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-transparent mx-auto shadow-lg"></div>
-            <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-orange-400 border-r-transparent animate-spin-slow"></div>
-          </div>
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-400 border-r-transparent mx-auto shadow-lg"></div>
           <p className="mt-6 text-white/90 text-lg font-medium">Loading your book clubs...</p>
           <div className="mt-2 text-blue-200 text-sm">📚 Organizing your library</div>
         </div>
