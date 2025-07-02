@@ -26,14 +26,16 @@ export default function MembersTable({
           </div>
           
           {/* Add Member Button - Following DiscussionsTimeline pattern */}
-          <div className="hidden md:flex">
-            <button 
-              onClick={onAddMember}
-              className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-blue-400/30"
-            >
-              Add Member
-            </button>
-          </div>
+          {import.meta.env.VITE_DEV === 'true' && (
+            <div className="hidden md:flex">
+              <button 
+                onClick={onAddMember}
+                className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-blue-400/30"
+              >
+                Add Member
+              </button>
+            </div>
+          )}
         </div>
       </div>
       
@@ -77,29 +79,31 @@ export default function MembersTable({
                     </div>
 
                     {/* Edit/Delete buttons - appear on hover, hidden on mobile */}
-                    <div className="hidden md:flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onEditMember(member)
-                        }}
-                        className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 hover:text-blue-200 p-1.5 rounded-lg border border-blue-400/30 hover:border-blue-400/50"
-                        title="Edit member"
-                      >
-                        <span className="text-sm">✏️</span>
-                      </button>
-                      
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onDeleteMember(member)
-                        }}
-                        className="bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 p-1.5 rounded-lg border border-red-400/30 hover:border-red-400/50"
-                        title="Delete member"
-                      >
-                        <span className="text-sm">🗑️</span>
-                      </button>
-                    </div>
+                    {import.meta.env.VITE_DEV === 'true' && (
+                      <div className="hidden md:flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onEditMember(member)
+                          }}
+                          className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 hover:text-blue-200 p-1.5 rounded-lg border border-blue-400/30 hover:border-blue-400/50"
+                          title="Edit member"
+                        >
+                          <span className="text-sm">✏️</span>
+                        </button>
+                        
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onDeleteMember(member)
+                          }}
+                          className="bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 p-1.5 rounded-lg border border-red-400/30 hover:border-red-400/50"
+                          title="Delete member"
+                        >
+                          <span className="text-sm">🗑️</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </td>
                 <td className="py-4 px-6 text-center">

@@ -27,12 +27,14 @@ export default function ClubsSidebar({
               </h2>
               <p className="text-blue-200/70 text-sm">{selectedServerData?.clubs.length || 0} active clubs</p>
             </div>
-            <button 
-              onClick={onAddClub}
-              className="bg-orange-500/20 hover:bg-orange-500/30 text-orange-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-orange-400/30"
-            >
-              Add Club
-            </button>
+            {import.meta.env.VITE_DEV === 'true' && (
+              <button 
+                onClick={onAddClub}
+                className="bg-orange-500/20 hover:bg-orange-500/30 text-orange-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-orange-400/30"
+              >
+                Add Club
+              </button>
+            )}
           </div>
         </div>
         
@@ -57,16 +59,18 @@ export default function ClubsSidebar({
                 }}
               >
                 {/* Delete Button - Top Right, appears on hover */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation() // Prevent club selection
-                    onDeleteClub({ id: club.id, name: club.name })
-                  }}
-                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 p-1.5 rounded-lg border border-red-400/30 hover:border-red-400/50"
-                  title={`Delete ${club.name}`}
-                >
-                  <span className="text-sm">🗑️</span>
-                </button>
+                  {import.meta.env.VITE_DEV === 'true' && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation() // Prevent club selection
+                      onDeleteClub({ id: club.id, name: club.name })
+                    }}
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 p-1.5 rounded-lg border border-red-400/30 hover:border-red-400/50"
+                    title={`Delete ${club.name}`}
+                  >
+                    <span className="text-sm">🗑️</span>
+                  </button>
+                )}
 
                 {/* Club Content - clickable area */}
                 <div 

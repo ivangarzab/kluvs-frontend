@@ -63,20 +63,22 @@ export default function CurrentReadingCard({
             </div>
             
             {/* Action Buttons Area - Top Right */}
-            <div className="hidden md:flex space-x-3">
-              <button 
-                onClick={onEditBook}
-                className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-blue-400/30"
-              >
-                Edit Book
-              </button>
-              <button 
-                onClick={onNewSession}
-                className="bg-orange-500/20 hover:bg-orange-500/30 text-orange-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-orange-400/30"
-              >
-                New Session
-              </button>
-            </div>
+            {import.meta.env.VITE_DEV === 'true' && (
+              <div className="hidden md:flex space-x-3">
+                <button 
+                  onClick={onEditBook}
+                  className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-blue-400/30"
+                >
+                  Edit Book
+                </button>
+                <button 
+                  onClick={onNewSession}
+                  className="bg-orange-500/20 hover:bg-orange-500/30 text-orange-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-orange-400/30"
+                >
+                  New Session
+                </button>
+              </div>
+            )}
           </div>
           
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
