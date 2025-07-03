@@ -2,6 +2,7 @@ import type { Club } from '../types'
 
 interface MembersTableProps {
   selectedClub: Club
+  isAdmin: boolean
   onAddMember: () => void
   onEditMember: (member: any) => void
   onDeleteMember: (member: any) => void
@@ -9,6 +10,7 @@ interface MembersTableProps {
 
 export default function MembersTable({ 
   selectedClub, 
+  isAdmin,
   onAddMember, 
   onEditMember, 
   onDeleteMember 
@@ -26,7 +28,7 @@ export default function MembersTable({
           </div>
           
           {/* Add Member Button - Following DiscussionsTimeline pattern */}
-          {import.meta.env.VITE_DEV === 'true' && (
+          {isAdmin && (
             <div className="hidden md:flex">
               <button 
                 onClick={onAddMember}
@@ -79,7 +81,7 @@ export default function MembersTable({
                     </div>
 
                     {/* Edit/Delete buttons - appear on hover, hidden on mobile */}
-                    {import.meta.env.VITE_DEV === 'true' && (
+                    {isAdmin && (
                       <div className="hidden md:flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <button
                           onClick={(e) => {

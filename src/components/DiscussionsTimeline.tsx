@@ -3,6 +3,7 @@ import type { Club } from '../types'
 
 interface DiscussionsTimelineProps {
   selectedClub: Club
+  isAdmin: boolean
   onAddDiscussion: () => void
   onEditDiscussion?: (discussion: any) => void
   onDeleteDiscussion?: (discussion: any) => void
@@ -10,6 +11,7 @@ interface DiscussionsTimelineProps {
 
 export default function DiscussionsTimeline({ 
   selectedClub, 
+  isAdmin,
   onAddDiscussion,
   onEditDiscussion,
   onDeleteDiscussion 
@@ -81,7 +83,7 @@ export default function DiscussionsTimeline({
           </div>
           
           {/* Action Button Area - Top Right */}
-          {import.meta.env.VITE_DEV === 'true' && (
+          {isAdmin && (
             <div className="hidden md:flex">
               <button 
                 onClick={onAddDiscussion}
@@ -138,7 +140,7 @@ export default function DiscussionsTimeline({
                     }`}>
                       
                       {/* Edit/Delete buttons - appear on hover */}
-                      {import.meta.env.VITE_DEV === 'true' && (
+                      {isAdmin && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
@@ -151,7 +153,7 @@ export default function DiscussionsTimeline({
                         </button>
                       )}
                       
-                      {import.meta.env.VITE_DEV === 'true' && (
+                      {isAdmin && (
                         <button
                           onClick={(e) => {
                             e.stopPropagation()

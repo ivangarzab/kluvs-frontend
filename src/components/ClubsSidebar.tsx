@@ -19,7 +19,7 @@ export default function ClubsSidebar({
   onAddClub,
   onDeleteClub
 }: ClubsSidebarProps) {
-  const { user, member, signOut, refreshMemberData, isAdmin } = useAuth()
+  const { user, member, refreshMemberData, signOut, isAdmin } = useAuth()
 
   const [showSignOutModal, setShowSignOutModal] = useState(false)
 
@@ -110,7 +110,7 @@ export default function ClubsSidebar({
               </h2>
               <p className="text-blue-200/70 text-sm">{selectedServerData?.clubs.length || 0} active clubs</p>
             </div>
-            {import.meta.env.VITE_DEV === 'true' && (
+            {isAdmin && (
               <button 
                 onClick={onAddClub}
                 className="bg-orange-500/20 hover:bg-orange-500/30 text-orange-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-orange-400/30"
@@ -142,7 +142,7 @@ export default function ClubsSidebar({
                 }}
               >
                 {/* Delete Button - Top Right, appears on hover */}
-                {import.meta.env.VITE_DEV === 'true' && (
+                {isAdmin && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation() // Prevent club selection

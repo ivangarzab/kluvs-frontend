@@ -13,14 +13,16 @@ import ClubsSidebar from './components/ClubsSidebar'
 import CurrentReadingCard from './components/CurrentReadingCard'
 import DiscussionsTimeline from './components/DiscussionsTimeline'
 import MembersTable from './components/MembersTable'
+import { useAuth } from './hooks/useAuth'
 
 export default function ClubsDashboard() {
   const [servers, setServers] = useState<Server[]>([])
   const [selectedServer, setSelectedServer] = useState<string>('')
   const [selectedClub, setSelectedClub] = useState<Club | null>(null)
   const [loading, setLoading] = useState(true)
-  const [clubLoading, setClubLoading] = useState(false) // New loading state for club data
+  const [clubLoading, setClubLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { isAdmin } = useAuth() 
   
   // Add Club Modal State
   const [showAddClubModal, setShowAddClubModal] = useState(false)
@@ -197,7 +199,7 @@ export default function ClubsDashboard() {
             </div>
             
             {/* Material 3 Server Selector */}
-            {servers.length > 1 && import.meta.env.VITE_DEV === 'true' && (
+            {servers.length > 1 && isAdmin && (
               <select 
                 value={selectedServer} 
                 onChange={(e) => {
@@ -272,6 +274,7 @@ export default function ClubsDashboard() {
                 {/* Hero Current Reading Card */}
                 <CurrentReadingCard
                   selectedClub={selectedClub}
+                  isAdmin={isAdmin}
                   onEditBook={() => setShowEditBookModal(true)}
                   onNewSession={() => setShowNewSessionModal(true)}
                 />
@@ -279,6 +282,7 @@ export default function ClubsDashboard() {
                 {/* Discussions Timeline */}
                 <DiscussionsTimeline
                   selectedClub={selectedClub}
+                  isAdmin={isAdmin}
                   onAddDiscussion={handleAddDiscussion}
                   onEditDiscussion={handleEditDiscussion}
                   onDeleteDiscussion={handleDeleteDiscussion}
@@ -287,6 +291,7 @@ export default function ClubsDashboard() {
                 {/* Material Design Members Table */}
                 <MembersTable 
                   selectedClub={selectedClub}
+                  isAdmin={isAdmin}
                   onAddMember={handleAddMember}
                   onEditMember={handleEditMember}
                   onDeleteMember={handleDeleteMember}
