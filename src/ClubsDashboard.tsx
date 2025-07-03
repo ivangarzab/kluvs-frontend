@@ -19,6 +19,7 @@ export default function ClubsDashboard() {
   const [selectedServer, setSelectedServer] = useState<string>('')
   const [selectedClub, setSelectedClub] = useState<Club | null>(null)
   const [loading, setLoading] = useState(true)
+  const [clubLoading, setClubLoading] = useState(false) // New loading state for club data
   const [error, setError] = useState<string | null>(null)
   
   // Add Club Modal State
@@ -100,6 +101,7 @@ export default function ClubsDashboard() {
 
   const fetchClubDetails = async (clubId: string) => {
     try {
+      setClubLoading(true) // Start loading
       setError(null)
       
       // Build URL with query parameters since Edge Function expects GET with query params
@@ -119,6 +121,8 @@ export default function ClubsDashboard() {
           ? String(err.message)
           : 'Failed to fetch club details'
       )
+    } finally {
+      setClubLoading(false) // Stop loading
     }
   }
 
@@ -235,7 +239,19 @@ export default function ClubsDashboard() {
 
           {/* Main Content Area */}
           <div className="lg:col-span-3">
-            {selectedClub ? (
+            {clubLoading ? (
+              /* Loading spinner when fetching club data */
+              <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 p-12 text-center shadow-xl">
+                <div className="max-w-md mx-auto">
+                  <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-400 border-r-transparent mx-auto shadow-lg mb-6"></div>
+                  <h3 className="text-2xl font-bold text-white mb-3">Loading Club Details</h3>
+                  <p className="text-white/60 leading-relaxed">Fetching the latest information about this book club...</p>
+                  <div className="mt-6 text-blue-200/50 text-sm">
+                    📚 Gathering all the reading data
+                  </div>
+                </div>
+              </div>
+            ) : selectedClub ? (
               <div className="space-y-6">
                 {/* Club Info & Stats */}
                 <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 p-6 shadow-xl">
@@ -277,6 +293,7 @@ export default function ClubsDashboard() {
                 />
               </div>
             ) : (
+              /* No club selected state */
               <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 p-12 text-center shadow-xl">
                 <div className="max-w-md mx-auto">
                   <div className="h-20 w-20 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
