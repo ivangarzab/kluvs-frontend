@@ -1,5 +1,7 @@
 import { useAuth } from '../hooks/useAuth'
 import type { Server, Club } from '../types'
+import { useState } from 'react'
+import SignOutModal from './modals/SignOutModal'
 
 interface ClubsSidebarProps {
   selectedServerData: Server | undefined
@@ -17,6 +19,8 @@ export default function ClubsSidebar({
   onDeleteClub
 }: ClubsSidebarProps) {
   const { user, member, signOut } = useAuth()
+
+  const [showSignOutModal, setShowSignOutModal] = useState(false)
 
   return (
     <div className="lg:col-span-1">
@@ -83,7 +87,7 @@ export default function ClubsSidebar({
                   Edit
                 </button>
                 <button 
-                  onClick={signOut}
+                  onClick={() => setShowSignOutModal(true)}
                   className="bg-red-500/20 hover:bg-red-500/30 text-red-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-red-400/30"
                 >
                   Sign Out
@@ -181,6 +185,11 @@ export default function ClubsSidebar({
           )}
         </div>
       </div>
+      {/* Add this after your component's JSX */}
+      <SignOutModal
+        isOpen={showSignOutModal}
+        onClose={() => setShowSignOutModal(false)}
+      />
     </div>
   )
 }
