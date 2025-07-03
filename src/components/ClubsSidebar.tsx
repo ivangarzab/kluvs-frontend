@@ -1,3 +1,4 @@
+import { useAuth } from '../hooks/useAuth'
 import type { Server, Club } from '../types'
 
 interface ClubsSidebarProps {
@@ -15,9 +16,87 @@ export default function ClubsSidebar({
   onAddClub,
   onDeleteClub
 }: ClubsSidebarProps) {
+  const { user, member, signOut } = useAuth()
+
+  // Count clubs member belongs to
+  const memberClubCount = 1
+
   return (
     <div className="lg:col-span-1">
       <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 overflow-hidden shadow-2xl">
+        
+        {/* Member Profile Section */}
+        {user && (
+          <>
+            <div className="p-6 border-b border-blue-300/20 bg-gradient-to-r from-orange-600/20 to-blue-600/20">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-2">
+                  <h2 className="text-lg font-bold text-white flex items-center">
+                    <span className="mr-2">👤</span>
+                    Profile
+                  </h2>
+                  {user.email === 'ivangb6@gmail.com' && (
+                    <span className="px-2 py-1 text-xs bg-orange-500/20 text-orange-200 rounded-full border border-orange-400/30">
+                      Admin
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {/* Member Profile Content */}
+            <div className="p-6 border-b border-blue-300/20">
+              <div className="flex items-start space-x-3 mb-4">
+                {/* Profile "spine" indicator */}
+                <div className="w-1 h-12 rounded-full bg-gradient-to-b from-orange-400 to-blue-500"></div>
+                
+                <div className="flex-1 min-w-0">
+                  {/* Member Name */}
+                  <h3 className="font-bold text-white text-lg mb-2 truncate">
+                    {member?.name || user.user_metadata?.full_name || user.email}
+                  </h3>
+                  
+                  {/* Stats */}
+                  {member ? (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4 text-sm text-blue-200/80">
+                        <span className="flex items-center">
+                          📚 {member.books_read} books
+                        </span>
+                        <span className="flex items-center">
+                          ⭐ {member.points} pts
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-blue-200/60 text-sm">Loading member data...</p>
+                  )}
+                </div>
+              </div>
+              
+              {/* Action Buttons - underneath profile data */}
+              <div className="flex items-center justify-between">
+                <button 
+                  className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-blue-400/30"
+                  onClick={() => {
+                    // TODO: Open edit modal
+                    console.log('Edit profile clicked')
+                  }}
+                >
+                  Edit
+                </button>
+                <button 
+                  onClick={signOut}
+                  className="bg-red-500/20 hover:bg-red-500/30 text-red-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-red-400/30"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Clubs Section */}
         <div className="p-6 border-b border-blue-300/20 bg-gradient-to-r from-blue-600/20 to-orange-600/20">
           <div className="flex justify-between items-center">
             <div>
@@ -59,7 +138,7 @@ export default function ClubsSidebar({
                 }}
               >
                 {/* Delete Button - Top Right, appears on hover */}
-                  {import.meta.env.VITE_DEV === 'true' && (
+                {import.meta.env.VITE_DEV === 'true' && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation() // Prevent club selection
