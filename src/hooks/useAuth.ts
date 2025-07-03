@@ -25,39 +25,39 @@ export function useAuth(): AuthUser {
   const [user, setUser] = useState<User | null>(null)
   const [member, setMember] = useState<Member | null>(null)
   const [loading, setLoading] = useState(true)
+  const [authInitialized, setAuthInitialized] = useState(false)
   
   // Check if user is admin (your email)
   const isAdmin = user?.email === 'ivangb6@gmail.com'
 
-  // Look up member data by user_id
+  // Look up member data by user_id using Edge Function
   const findMemberByUserId = async (userId: string): Promise<Member | null> => {
     try {
-      console.log('🔍 Looking up member for user_id:', userId)
+      console.log('🔍 Looking up member for user_id via Edge Function:', userId)
       
-      const { data, error, count } = await supabase
-        .from('members')
-        .select('*', { count: 'exact' })
-        .eq('user_id', userId)
+      // Wait for session to be ready
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
       
-      console.log('📡 Raw query result:', { data, error, count })
+      if (sessionError || !session) {
+        console.log('❌ No active session for Edge Function call')
+        return null
+      }
+      
+      console.log('✅ Session ready, calling Edge Function')
+      
+      const { data, error } = await supabase.functions.invoke(`member?user_id=${encodeURIComponent(userId)}`, {
+        method: 'GET'
+      })
+      
+      console.log('📡 Edge Function response:', { data, error })
       
       if (error) {
-        console.error('❌ Query error:', error)
+        console.error('❌ Edge Function error:', error)
         return null
       }
       
-      if (!data || data.length === 0) {
-        console.log('❌ No member found for this user')
-        return null
-      }
-      
-      if (data.length > 1) {
-        console.warn('⚠️ Multiple members found, using first one:', data)
-      }
-      
-      const member = data[0]
-      console.log('✅ Found member:', member)
-      return member
+      console.log('✅ Found member via Edge Function:', data)
+      return data
     } catch (error) {
       console.error('💥 Exception in member lookup:', error)
       return null
@@ -98,8 +98,23 @@ export function useAuth(): AuthUser {
   // Handle member lookup/creation when user changes
   const handleUserChange = async (newUser: User | null) => {
     console.log('🚀 handleUserChange called with user:', newUser?.email)
+    console.log('🔍 User metadata:', {
+      provider: newUser?.app_metadata?.provider,
+      full_name: newUser?.user_metadata?.full_name,
+      session_type: newUser ? 'fresh_or_restored' : 'null'
+    })
+    
     setUser(newUser)
-    setMember(null) // Skip member lookup for now
+    
+    if (!newUser) {
+      setMember(null)
+      return
+    }
+  
+    console.log('🎯 About to call Edge Function...')
+    const memberData = await findMemberByUserId(newUser.id)
+    console.log('🎯 Edge Function completed, setting member:', !!memberData)
+    setMember(memberData)
   }
 
   // Sign in with Discord
@@ -149,18 +164,21 @@ export function useAuth(): AuthUser {
     supabase.auth.getSession().then(({ data: { session } }) => {
       handleUserChange(session?.user ?? null)
       setLoading(false)
+      setAuthInitialized(true) // Mark as initialized
     })
-
+  
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      await handleUserChange(session?.user ?? null)
+      if (authInitialized) { // Only call if already initialized
+        await handleUserChange(session?.user ?? null)
+      }
       setLoading(false)
     })
-
+  
     return () => subscription.unsubscribe()
-  }, [])
+  }, [authInitialized])
 
   return {
     user,
