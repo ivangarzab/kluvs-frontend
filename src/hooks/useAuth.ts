@@ -1,14 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
 import type { User } from '@supabase/supabase-js'
-
-interface Member {
-  id: number
-  name: string
-  points: number
-  books_read: number
-  user_id: string
-}
+import type { Member } from '../types'
 
 interface AuthUser {
   user: User | null
@@ -97,7 +90,7 @@ export function useAuth(): AuthUser {
   }
 
   // Refresh member data - needed for profile updates
-  const refreshMemberData = async () => {
+  const refreshMemberData = async (): Promise<void> => {
     if (user) {
       console.log('🔄 Refreshing member data...')
       const memberData = await findMemberByUserId(user.id)

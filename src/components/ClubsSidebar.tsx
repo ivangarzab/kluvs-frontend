@@ -203,6 +203,7 @@ export default function ClubsSidebar({
           setShowEditProfileModal(false)
         }}
         onError={(error) => console.error('Profile update error:', error)}
+        currentMember={member}
       />
     </div>
   )

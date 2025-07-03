@@ -1,19 +1,22 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../supabase'
 import { useAuth } from '../../hooks/useAuth'
+import type { Member } from '../../types'
 
 interface EditProfileModalProps {
   isOpen: boolean
   onClose: () => void
   onProfileUpdated: () => void
   onError: (error: string) => void
+  currentMember: Member | null 
 }
 
 export default function EditProfileModal({
   isOpen,
   onClose,
   onProfileUpdated,
-  onError
+  onError,
+  currentMember
 }: EditProfileModalProps) {
   const { member } = useAuth()
   const [loading, setLoading] = useState(false)
@@ -21,10 +24,10 @@ export default function EditProfileModal({
 
   // Pre-populate form when modal opens
   useEffect(() => {
-    if (isOpen && member) {
-      setName(member.name)
+    if (isOpen && currentMember) {
+      setName(currentMember.name)  // Use the fresh data passed from parent
     }
-  }, [isOpen, member])
+  }, [isOpen, currentMember])
 
   const handleSubmit = async () => {
     if (!name.trim()) {
