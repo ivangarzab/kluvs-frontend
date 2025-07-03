@@ -52,7 +52,7 @@ export default function SignOutModal({
           <button
             onClick={handleSignOut}
             disabled={loading}
-            className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white px-4 py-2.5 rounded-xl font-bold transition-all duration-200 hover:scale-105 shadow-lg disabled:hover:scale-100 flex items-center justify-center space-x-2"
+            className="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-200 px-4 py-2.5 rounded-xl font-medium transition-all duration-200 border border-red-400/30 flex items-center justify-center space-x-2"
           >
             {loading ? (
               <>

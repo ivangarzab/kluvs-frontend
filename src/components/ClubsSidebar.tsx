@@ -32,7 +32,7 @@ export default function ClubsSidebar({
         {/* Member Profile Section */}
         {user && (
           <>
-            <div className="p-6 border-b border-blue-300/20 bg-gradient-to-r from-orange-600/20 to-blue-600/20">
+            <div className="p-6 border-b border-blue-300/20 bg-gradient-to-r from-blue-600/20 to-orange-600/20">
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-2">
                   <h2 className="text-lg font-bold text-white flex items-center">
@@ -57,7 +57,7 @@ export default function ClubsSidebar({
                 <div className="flex-1 min-w-0">
                   {/* Member Name */}
                   <h3 className="font-bold text-white text-lg mb-2 truncate">
-                    {member?.name || user.user_metadata?.full_name || user.email}
+                    {member?.name || 'Loading...'}
                   </h3>
                   
                   {/* Stats */}
