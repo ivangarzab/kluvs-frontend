@@ -14,7 +14,7 @@ export default function SignOutModal({
   const { signOut } = useAuth()
   const [loading, setLoading] = useState(false)
 
-  const handleSignOut = async () => {{
+  const handleSignOut = async () => {
     try {
       setLoading(true)
       await signOut()
@@ -22,7 +22,7 @@ export default function SignOutModal({
     } catch (error) {
       console.error('Sign out error:', error)
       setLoading(false)
-    }}
+    }
   }
 
   if (!isOpen) return null
@@ -52,13 +52,10 @@ export default function SignOutModal({
           <button
             onClick={handleSignOut}
             disabled={loading}
-            className="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-200 px-4 py-2.5 rounded-xl font-medium transition-all duration-200 border border-red-400/30 flex items-center justify-center space-x-2"
+            className="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-200 px-4 py-2.5 rounded-xl font-medium transition-all duration-200 border border-red-400/30 flex items-center justify-center"
           >
             {loading ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                <span>Signing Out...</span>
-              </>
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-red-200 border-t-transparent"></div>
             ) : (
               <span>Sign Out</span>
             )}
