@@ -18,9 +18,6 @@ export default function ClubsSidebar({
 }: ClubsSidebarProps) {
   const { user, member, signOut } = useAuth()
 
-  // Count clubs member belongs to
-  const memberClubCount = 1
-
   return (
     <div className="lg:col-span-1">
       <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 overflow-hidden shadow-2xl">
@@ -153,7 +150,10 @@ export default function ClubsSidebar({
 
                 {/* Club Content - clickable area */}
                 <div 
-                  onClick={() => onClubSelect(club.id)}
+                  onClick={() => {
+                    console.log(`Club selected: ${club.name} (${club.id})`)
+                    onClubSelect(club.id)
+                  }}
                   className="flex items-start space-x-3"
                 >
                   <div className={`w-1 h-12 rounded-full bg-gradient-to-b transition-all duration-200 ${
