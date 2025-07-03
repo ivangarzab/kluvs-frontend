@@ -19,7 +19,7 @@ export default function ClubsSidebar({
   onAddClub,
   onDeleteClub
 }: ClubsSidebarProps) {
-  const { user, member, signOut, refreshMemberData } = useAuth()
+  const { user, member, signOut, refreshMemberData, isAdmin } = useAuth()
 
   const [showSignOutModal, setShowSignOutModal] = useState(false)
 
@@ -39,7 +39,7 @@ export default function ClubsSidebar({
                     <span className="mr-2">👤</span>
                     Profile
                   </h2>
-                  {user.email === 'ivangb6@gmail.com' && (
+                  {isAdmin && (
                     <span className="px-2 py-1 text-xs bg-orange-500/20 text-orange-200 rounded-full border border-orange-400/30">
                       Admin
                     </span>

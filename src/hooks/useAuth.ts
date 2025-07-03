@@ -20,8 +20,8 @@ export function useAuth(): AuthUser {
   const [loading, setLoading] = useState(true)
   const [authInitialized, setAuthInitialized] = useState(false)
   
-  // Check if user is admin (your email)
-  const isAdmin = user?.email === 'ivangb6@gmail.com'
+  // Check if user is admin
+  const isAdmin = member?.role == 'admin'
 
   // Look up member data by user_id using Edge Function
   const findMemberByUserId = async (userId: string): Promise<Member | null> => {
