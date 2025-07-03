@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 import { supabase } from '../supabase'
 import type { User } from '@supabase/supabase-js'
 import type { Member } from '../types'
 
-interface AuthUser {
+interface AuthContextType {
   user: User | null
   member: Member | null
   loading: boolean
@@ -14,14 +14,25 @@ interface AuthUser {
   refreshMemberData: () => Promise<void>
 }
 
-export function useAuth(): AuthUser {
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
+
+// Custom hook to use the auth context
+export function useAuth(): AuthContextType {
+  const context = useContext(AuthContext)
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+  return context
+}
+
+// Auth Provider Component
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [member, setMember] = useState<Member | null>(null)
   const [loading, setLoading] = useState(true)
-  const [authInitialized, setAuthInitialized] = useState(false)
   
   // Check if user is admin
-  const isAdmin = member?.role == 'admin'
+  const isAdmin = member?.role === 'admin'
 
   // Look up member data by user_id using Edge Function
   const findMemberByUserId = async (userId: string): Promise<Member | null> => {
@@ -103,6 +114,12 @@ export function useAuth(): AuthUser {
   const handleUserChange = async (newUser: User | null) => {
     console.log('🚀 handleUserChange called with user:', newUser?.email)
     
+    // Prevent duplicate calls for the same user
+    if (newUser?.id === user?.id) {
+      console.log('⚡ Skipping duplicate handleUserChange for same user')
+      return
+    }
+    
     setUser(newUser)
     
     if (!newUser) {
@@ -177,29 +194,31 @@ export function useAuth(): AuthUser {
     }
   }
 
-  // Initialize auth state and listen for changes - keeping the authInitialized guard
+  // Initialize auth state and listen for changes - runs only once per app
   useEffect(() => {
+    let initialized = false
+    
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       handleUserChange(session?.user ?? null)
       setLoading(false)
-      setAuthInitialized(true) // Mark as initialized
+      initialized = true
     })
 
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (authInitialized) { // Only call if already initialized - this prevents duplicate calls
+      if (initialized) {
         await handleUserChange(session?.user ?? null)
       }
       setLoading(false)
     })
 
     return () => subscription.unsubscribe()
-  }, [authInitialized]) // Keep the dependency on authInitialized
+  }, [])
 
-  return {
+  const value = {
     user,
     member,
     loading,
@@ -207,6 +226,12 @@ export function useAuth(): AuthUser {
     signInWithDiscord,
     signInWithGoogle,
     signOut,
-    refreshMemberData, // Add this back for profile updates
+    refreshMemberData,
   }
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  )
 }

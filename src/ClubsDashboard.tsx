@@ -13,7 +13,7 @@ import ClubsSidebar from './components/ClubsSidebar'
 import CurrentReadingCard from './components/CurrentReadingCard'
 import DiscussionsTimeline from './components/DiscussionsTimeline'
 import MembersTable from './components/MembersTable'
-import { useAuth } from './hooks/useAuth'
+import { useAuth } from './contexts/AuthContext'
 
 export default function ClubsDashboard() {
   const [servers, setServers] = useState<Server[]>([])

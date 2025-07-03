@@ -1,4 +1,4 @@
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from '../contexts/AuthContext'
 import type { Server, Club } from '../types'
 import { useState } from 'react'
 import SignOutModal from './modals/SignOutModal'

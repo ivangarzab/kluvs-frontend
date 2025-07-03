@@ -1,11 +1,10 @@
-import { useAuth } from './hooks/useAuth'
+import { AuthProvider, useAuth } from './contexts/AuthContext'
 import ClubsDashboard from './ClubsDashboard'
 import LoginPage from './LoginPage'
 
-function App() {
+function AppContent() {
   const { user, loading } = useAuth()
 
-  // Show loading screen while checking auth
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-slate-900 to-blue-900 flex items-center justify-center">
@@ -18,13 +17,19 @@ function App() {
     )
   }
 
-  // Show login page if not authenticated
   if (!user) {
     return <LoginPage />
   }
 
-  // Show dashboard if authenticated
   return <ClubsDashboard />
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent/>
+    </AuthProvider>
+  )
 }
 
 export default App

@@ -1,6 +1,6 @@
 // src/components/modals/SignOutModal.tsx
 import { useState } from 'react'
-import { useAuth } from '../../hooks/useAuth'
+import { useAuth } from '../../contexts/AuthContext'
 
 interface SignOutModalProps {
   isOpen: boolean
