@@ -1,4 +1,3 @@
-// src/hooks/useAuth.ts
 import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
 import type { User } from '@supabase/supabase-js'
@@ -19,6 +18,7 @@ interface AuthUser {
   signInWithDiscord: () => Promise<void>
   signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
+  refreshMemberData: () => Promise<void>
 }
 
 export function useAuth(): AuthUser {
@@ -64,7 +64,7 @@ export function useAuth(): AuthUser {
     }
   }
 
-  // Create new member record for new users
+  // Create new member record for new users using Edge Function
   const createNewMember = async (user: User): Promise<Member | null> => {
     try {
       const memberName = user.user_metadata?.full_name || 
@@ -72,49 +72,74 @@ export function useAuth(): AuthUser {
                         user.email?.split('@')[0] || 
                         'New Member'
       
-      console.log('🆕 Creating new member:', memberName)
+      console.log('🆕 Creating new member via Edge Function:', memberName)
       
-      const { data, error } = await supabase
-        .from('members')
-        .insert({
-          name: memberName,
-          points: 0,
-          books_read: 0,
-          user_id: user.id
-        })
-        .select()
-        .single()
+      const requestBody = {
+        name: memberName,
+        points: 0,
+        books_read: 0,
+        user_id: user.id
+      }
+      
+      const { data, error } = await supabase.functions.invoke('member', {
+        method: 'POST',
+        body: requestBody
+      })
       
       if (error) throw error
       
-      console.log('✅ Created new member:', data)
-      return data
+      console.log('✅ Created new member via Edge Function:', data)
+      return data.member || data // Handle different response formats
     } catch (error) {
-      console.error('💥 Error creating member:', error)
+      console.error('💥 Error creating member via Edge Function:', error)
       return null
+    }
+  }
+
+  // Refresh member data - needed for profile updates
+  const refreshMemberData = async () => {
+    if (user) {
+      console.log('🔄 Refreshing member data...')
+      const memberData = await findMemberByUserId(user.id)
+      console.log('🔄 Refreshed member:', memberData)
+      setMember(memberData)
     }
   }
 
   // Handle member lookup/creation when user changes
   const handleUserChange = async (newUser: User | null) => {
     console.log('🚀 handleUserChange called with user:', newUser?.email)
-    console.log('🔍 User metadata:', {
-      provider: newUser?.app_metadata?.provider,
-      full_name: newUser?.user_metadata?.full_name,
-      session_type: newUser ? 'fresh_or_restored' : 'null'
-    })
     
     setUser(newUser)
     
     if (!newUser) {
+      console.log('❌ No user, clearing member')
       setMember(null)
       return
     }
-  
-    console.log('🎯 About to call Edge Function...')
-    const memberData = await findMemberByUserId(newUser.id)
-    console.log('🎯 Edge Function completed, setting member:', !!memberData)
-    setMember(memberData)
+
+    try {
+      console.log('🔄 Starting member lookup...')
+      
+      // Look up member by user_id
+      const memberData = await findMemberByUserId(newUser.id)
+      
+      console.log('🎯 Member lookup completed:', memberData)
+      
+      // If no member found, create one for new users
+      if (!memberData) {
+        console.log('🆕 No member found, creating new one...')
+        const newMemberData = await createNewMember(newUser)
+        console.log('✨ New member created:', newMemberData)
+        setMember(newMemberData)
+      } else {
+        console.log('✅ Setting existing member:', memberData)
+        setMember(memberData)
+      }
+    } catch (error) {
+      console.error('💥 Error in handleUserChange:', error)
+      setMember(null)
+    }
   }
 
   // Sign in with Discord
@@ -124,8 +149,8 @@ export function useAuth(): AuthUser {
         provider: 'discord',
         options: {
           redirectTo: `${window.location.origin}`
-        // Sign out
-      }})
+        }
+      })
       if (error) throw error
     } catch (error) {
       console.error('Error signing in:', error)
@@ -148,6 +173,7 @@ export function useAuth(): AuthUser {
       throw error
     }
   }
+
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut()
@@ -158,7 +184,7 @@ export function useAuth(): AuthUser {
     }
   }
 
-  // Initialize auth state and listen for changes
+  // Initialize auth state and listen for changes - keeping the authInitialized guard
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -166,19 +192,19 @@ export function useAuth(): AuthUser {
       setLoading(false)
       setAuthInitialized(true) // Mark as initialized
     })
-  
+
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (authInitialized) { // Only call if already initialized
+      if (authInitialized) { // Only call if already initialized - this prevents duplicate calls
         await handleUserChange(session?.user ?? null)
       }
       setLoading(false)
     })
-  
+
     return () => subscription.unsubscribe()
-  }, [authInitialized])
+  }, [authInitialized]) // Keep the dependency on authInitialized
 
   return {
     user,
@@ -188,5 +214,6 @@ export function useAuth(): AuthUser {
     signInWithDiscord,
     signInWithGoogle,
     signOut,
+    refreshMemberData, // Add this back for profile updates
   }
 }

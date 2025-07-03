@@ -2,6 +2,7 @@ import { useAuth } from '../hooks/useAuth'
 import type { Server, Club } from '../types'
 import { useState } from 'react'
 import SignOutModal from './modals/SignOutModal'
+import EditProfileModal from './modals/EditProfileModal'
 
 interface ClubsSidebarProps {
   selectedServerData: Server | undefined
@@ -18,9 +19,11 @@ export default function ClubsSidebar({
   onAddClub,
   onDeleteClub
 }: ClubsSidebarProps) {
-  const { user, member, signOut } = useAuth()
+  const { user, member, signOut, refreshMemberData } = useAuth()
 
   const [showSignOutModal, setShowSignOutModal] = useState(false)
+
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false)
 
   return (
     <div className="lg:col-span-1">
@@ -80,8 +83,8 @@ export default function ClubsSidebar({
                 <button 
                   className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-blue-400/30"
                   onClick={() => {
-                    // TODO: Open edit modal
                     console.log('Edit profile clicked')
+                    setShowEditProfileModal(true)
                   }}
                 >
                   Edit
@@ -189,6 +192,17 @@ export default function ClubsSidebar({
       <SignOutModal
         isOpen={showSignOutModal}
         onClose={() => setShowSignOutModal(false)}
+      />
+
+      <EditProfileModal
+        isOpen={showEditProfileModal}
+        onClose={() => setShowEditProfileModal(false)}
+        onProfileUpdated={() => {
+          // Refresh the member data instead of page reload
+          refreshMemberData()
+          setShowEditProfileModal(false)
+        }}
+        onError={(error) => console.error('Profile update error:', error)}
       />
     </div>
   )
