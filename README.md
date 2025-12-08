@@ -1,5 +1,8 @@
 # Kluvs Frontend - Book Club Management App
 
+[![CI](https://github.com/ivangarzab/kluvs-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/ivangarzab/kluvs-frontend/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/ivangarzab/kluvs-frontend/branch/main/graph/badge.svg)](https://codecov.io/gh/ivangarzab/kluvs-frontend)
+
 A React + TypeScript web application for managing book clubs across multiple Discord servers. Track reading sessions, discussions, members, and club activities with OAuth authentication.
 
 ## 🚀 Quick Start
