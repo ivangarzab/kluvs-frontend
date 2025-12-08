@@ -9,6 +9,7 @@ export interface Club {
   name: string
   discord_channel: string
   server_id: string
+  founded_date?: string
   members: Member[]
   active_session: Session | null
   past_sessions: Session[]
@@ -30,20 +31,25 @@ export interface Discussion {
 }
 
 export interface Book {
+  id?: number
   title: string
   author: string
   edition?: string
   year?: number
   isbn?: string
+  page_count?: number
 }
 
 export type UserRole = 'admin' | 'member'
 
 export interface Member {
   id: number
+  user_id?: string
   name: string
+  handle?: string
   points: number
   books_read: number
   clubs: string[]
   role: UserRole
+  created_at?: string
 }
