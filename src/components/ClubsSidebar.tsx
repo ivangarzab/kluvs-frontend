@@ -1,4 +1,8 @@
+import { useAuth } from '../contexts/AuthContext'
 import type { Server, Club } from '../types'
+import { useState } from 'react'
+import SignOutModal from './modals/SignOutModal'
+import EditProfileModal from './modals/EditProfileModal'
 
 interface ClubsSidebarProps {
   selectedServerData: Server | undefined
@@ -15,9 +19,88 @@ export default function ClubsSidebar({
   onAddClub,
   onDeleteClub
 }: ClubsSidebarProps) {
+  const { user, member, refreshMemberData, signOut, isAdmin } = useAuth()
+
+  const [showSignOutModal, setShowSignOutModal] = useState(false)
+
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false)
+
   return (
     <div className="lg:col-span-1">
       <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 overflow-hidden shadow-2xl">
+        
+        {/* Member Profile Section */}
+        {user && (
+          <>
+            <div className="p-6 border-b border-blue-300/20 bg-gradient-to-r from-blue-600/20 to-orange-600/20">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-2">
+                  <h2 className="text-lg font-bold text-white flex items-center">
+                    <span className="mr-2">👤</span>
+                    Profile
+                  </h2>
+                  {isAdmin && (
+                    <span className="px-2 py-1 text-xs bg-orange-500/20 text-orange-200 rounded-full border border-orange-400/30">
+                      Admin
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {/* Member Profile Content */}
+            <div className="p-6 border-b border-blue-300/20">
+              <div className="flex items-start space-x-3 mb-4">
+                {/* Profile "spine" indicator */}
+                <div className="w-1 h-12 rounded-full bg-gradient-to-b from-orange-400 to-blue-500"></div>
+                
+                <div className="flex-1 min-w-0">
+                  {/* Member Name */}
+                  <h3 className="font-bold text-white text-lg mb-2 truncate">
+                    {member?.name || 'Loading...'}
+                  </h3>
+                  
+                  {/* Stats */}
+                  {member ? (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4 text-sm text-blue-200/80">
+                        <span className="flex items-center">
+                          📚 {member.books_read} books
+                        </span>
+                        <span className="flex items-center">
+                          ⭐ {member.points} pts
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-blue-200/60 text-sm">Loading member data...</p>
+                  )}
+                </div>
+              </div>
+              
+              {/* Action Buttons - underneath profile data */}
+              <div className="flex items-center justify-between">
+                <button 
+                  className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-blue-400/30"
+                  onClick={() => {
+                    console.log('Edit profile clicked')
+                    setShowEditProfileModal(true)
+                  }}
+                >
+                  Edit
+                </button>
+                <button 
+                  onClick={() => setShowSignOutModal(true)}
+                  className="bg-red-500/20 hover:bg-red-500/30 text-red-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-red-400/30"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Clubs Section */}
         <div className="p-6 border-b border-blue-300/20 bg-gradient-to-r from-blue-600/20 to-orange-600/20">
           <div className="flex justify-between items-center">
             <div>
@@ -27,7 +110,7 @@ export default function ClubsSidebar({
               </h2>
               <p className="text-blue-200/70 text-sm">{selectedServerData?.clubs.length || 0} active clubs</p>
             </div>
-            {import.meta.env.VITE_DEV === 'true' && (
+            {isAdmin && (
               <button 
                 onClick={onAddClub}
                 className="bg-orange-500/20 hover:bg-orange-500/30 text-orange-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-orange-400/30"
@@ -59,7 +142,7 @@ export default function ClubsSidebar({
                 }}
               >
                 {/* Delete Button - Top Right, appears on hover */}
-                  {import.meta.env.VITE_DEV === 'true' && (
+                {isAdmin && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation() // Prevent club selection
@@ -74,7 +157,10 @@ export default function ClubsSidebar({
 
                 {/* Club Content - clickable area */}
                 <div 
-                  onClick={() => onClubSelect(club.id)}
+                  onClick={() => {
+                    console.log(`Club selected: ${club.name} (${club.id})`)
+                    onClubSelect(club.id)
+                  }}
                   className="flex items-start space-x-3"
                 >
                   <div className={`w-1 h-12 rounded-full bg-gradient-to-b transition-all duration-200 ${
@@ -102,6 +188,23 @@ export default function ClubsSidebar({
           )}
         </div>
       </div>
+      {/* Add this after your component's JSX */}
+      <SignOutModal
+        isOpen={showSignOutModal}
+        onClose={() => setShowSignOutModal(false)}
+      />
+
+      <EditProfileModal
+        isOpen={showEditProfileModal}
+        onClose={() => setShowEditProfileModal(false)}
+        onProfileUpdated={() => {
+          // Refresh the member data instead of page reload
+          refreshMemberData()
+          setShowEditProfileModal(false)
+        }}
+        onError={(error) => console.error('Profile update error:', error)}
+        currentMember={member}
+      />
     </div>
   )
 }

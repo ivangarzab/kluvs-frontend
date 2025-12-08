@@ -37,10 +37,13 @@ export interface Book {
   isbn?: string
 }
 
+export type UserRole = 'admin' | 'member'
+
 export interface Member {
   id: number
   name: string
   points: number
   books_read: number
   clubs: string[]
+  role: UserRole
 }

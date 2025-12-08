@@ -2,12 +2,14 @@ import type { Club } from '../types'
 
 interface CurrentReadingCardProps {
   selectedClub: Club
+  isAdmin: boolean
   onEditBook: () => void
   onNewSession: () => void
 }
 
 export default function CurrentReadingCard({
   selectedClub,
+  isAdmin,
   onEditBook,
   onNewSession
 }: CurrentReadingCardProps) {
@@ -63,7 +65,7 @@ export default function CurrentReadingCard({
             </div>
             
             {/* Action Buttons Area - Top Right */}
-            {import.meta.env.VITE_DEV === 'true' && (
+            {isAdmin && (
               <div className="hidden md:flex space-x-3">
                 <button 
                   onClick={onEditBook}

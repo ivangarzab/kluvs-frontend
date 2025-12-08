@@ -13,13 +13,16 @@ import ClubsSidebar from './components/ClubsSidebar'
 import CurrentReadingCard from './components/CurrentReadingCard'
 import DiscussionsTimeline from './components/DiscussionsTimeline'
 import MembersTable from './components/MembersTable'
+import { useAuth } from './contexts/AuthContext'
 
 export default function ClubsDashboard() {
   const [servers, setServers] = useState<Server[]>([])
   const [selectedServer, setSelectedServer] = useState<string>('')
   const [selectedClub, setSelectedClub] = useState<Club | null>(null)
   const [loading, setLoading] = useState(true)
+  const [clubLoading, setClubLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { isAdmin } = useAuth() 
   
   // Add Club Modal State
   const [showAddClubModal, setShowAddClubModal] = useState(false)
@@ -100,25 +103,58 @@ export default function ClubsDashboard() {
 
   const fetchClubDetails = async (clubId: string) => {
     try {
+      console.log('🏢 [CLUB-FETCH] Starting fetchClubDetails for clubId:', clubId)
+      console.log('🏢 [CLUB-FETCH] Selected server:', selectedServer)
+      
+      setClubLoading(true) // Start loading
       setError(null)
       
       // Build URL with query parameters since Edge Function expects GET with query params
       const functionName = `club?id=${encodeURIComponent(clubId)}&server_id=${encodeURIComponent(selectedServer)}`
+      console.log('🏢 [CLUB-FETCH] Calling Edge Function with URL:', functionName)
       
       const { data, error } = await supabase.functions.invoke(functionName, {
         method: 'GET'
       })
-
-      if (error) throw error
+  
+      console.log('🏢 [CLUB-FETCH] Edge Function response:', { 
+        success: !error, 
+        error: error?.message || null,
+        hasData: !!data,
+        dataKeys: data ? Object.keys(data) : null
+      })
+  
+      if (error) {
+        console.error('🏢 [CLUB-FETCH] Edge Function error:', error)
+        throw error
+      }
+      
+      console.log('🏢 [CLUB-FETCH] Setting selected club:', {
+        clubId: data?.id,
+        clubName: data?.name,
+        hasActiveSession: !!data?.active_session,
+        membersCount: data?.members?.length || 0
+      })
       
       setSelectedClub(data)
+      console.log('🏢 [CLUB-FETCH] Successfully completed fetchClubDetails')
+      
     } catch (err: unknown) {
-      console.error('Error fetching club details:', err)
+      console.error('🏢 [CLUB-FETCH] ERROR in fetchClubDetails:', err)
+      console.error('🏢 [CLUB-FETCH] Error details:', {
+        message: err && typeof err === 'object' && 'message' in err ? err.message : String(err),
+        clubId,
+        selectedServer
+      })
+      
       setError(
         err && typeof err === 'object' && 'message' in err
           ? String(err.message)
           : 'Failed to fetch club details'
       )
+    } finally {
+      console.log('🏢 [CLUB-FETCH] Setting clubLoading to false')
+      setClubLoading(false) // Stop loading
     }
   }
 
@@ -193,7 +229,7 @@ export default function ClubsDashboard() {
             </div>
             
             {/* Material 3 Server Selector */}
-            {servers.length > 1 && import.meta.env.VITE_DEV === 'true' && (
+            {servers.length > 1 && isAdmin && (
               <select 
                 value={selectedServer} 
                 onChange={(e) => {
@@ -235,7 +271,19 @@ export default function ClubsDashboard() {
 
           {/* Main Content Area */}
           <div className="lg:col-span-3">
-            {selectedClub ? (
+            {clubLoading ? (
+              /* Loading spinner when fetching club data */
+              <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 p-12 text-center shadow-xl">
+                <div className="max-w-md mx-auto">
+                  <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-400 border-r-transparent mx-auto shadow-lg mb-6"></div>
+                  <h3 className="text-2xl font-bold text-white mb-3">Loading Club Details</h3>
+                  <p className="text-white/60 leading-relaxed">Fetching the latest information about this book club...</p>
+                  <div className="mt-6 text-blue-200/50 text-sm">
+                    📚 Gathering all the reading data
+                  </div>
+                </div>
+              </div>
+            ) : selectedClub ? (
               <div className="space-y-6">
                 {/* Club Info & Stats */}
                 <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 p-6 shadow-xl">
@@ -256,6 +304,7 @@ export default function ClubsDashboard() {
                 {/* Hero Current Reading Card */}
                 <CurrentReadingCard
                   selectedClub={selectedClub}
+                  isAdmin={isAdmin}
                   onEditBook={() => setShowEditBookModal(true)}
                   onNewSession={() => setShowNewSessionModal(true)}
                 />
@@ -263,6 +312,7 @@ export default function ClubsDashboard() {
                 {/* Discussions Timeline */}
                 <DiscussionsTimeline
                   selectedClub={selectedClub}
+                  isAdmin={isAdmin}
                   onAddDiscussion={handleAddDiscussion}
                   onEditDiscussion={handleEditDiscussion}
                   onDeleteDiscussion={handleDeleteDiscussion}
@@ -271,12 +321,14 @@ export default function ClubsDashboard() {
                 {/* Material Design Members Table */}
                 <MembersTable 
                   selectedClub={selectedClub}
+                  isAdmin={isAdmin}
                   onAddMember={handleAddMember}
                   onEditMember={handleEditMember}
                   onDeleteMember={handleDeleteMember}
                 />
               </div>
             ) : (
+              /* No club selected state */
               <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 p-12 text-center shadow-xl">
                 <div className="max-w-md mx-auto">
                   <div className="h-20 w-20 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
