@@ -9,6 +9,7 @@ A React + TypeScript web application for managing book clubs. Users can track re
 - **Styling**: Tailwind CSS
 - **Backend**: Supabase (Auth + Edge Functions)
 - **Authentication**: OAuth via Discord and Google
+- **Testing**: Vitest + React Testing Library
 
 ## Backend API Compatibility
 - **Backend Repository**: `bookclub-api`
@@ -140,24 +141,77 @@ VITE_SUPABASE_ANON_KEY=your_anon_key
 - Fixed sign out infinite spinner bug
 - Added session persistence configuration
 
+## Testing
+
+### Test Infrastructure
+- **Framework**: Vitest with jsdom environment
+- **Testing Library**: React Testing Library + jest-dom matchers
+- **Coverage Target**: 80%+ statements, functions, lines; 75%+ branches
+
+### Running Tests
+```bash
+npm run test              # Run tests in watch mode
+npm run test:run          # Run tests once
+npm run test:ui           # Run tests with UI
+npm run test:coverage     # Run tests with coverage report
+npm run validate          # Run lint + type-check + tests
+```
+
+### Test Structure
+```
+src/__tests__/
+├── setup.ts                      # Global test setup
+├── utils/
+│   ├── mocks.ts                  # Mock data (servers, clubs, members)
+│   ├── test-utils.tsx            # Custom render functions
+│   └── supabase-mock.ts          # Supabase client mocks
+├── contexts/
+│   └── AuthContext.test.tsx      # ✅ 18 tests (100% coverage)
+├── components/
+│   ├── ClubsSidebar.test.tsx
+│   ├── MembersTable.test.tsx
+│   └── modals/
+│       └── AddClubModal.test.tsx
+```
+
+### Writing Tests
+1. Import test utilities: `import { render, screen, waitFor } from '../__tests__/utils/test-utils'`
+2. Import mocks: `import { mockAdminMember, mockClub } from '../__tests__/utils/mocks'`
+3. Mock Supabase client if needed (see AuthContext.test.tsx for examples)
+4. Use `renderWithAuth()` for components that need AuthContext
+5. Test user interactions with `@testing-library/user-event`
+6. Use `waitFor()` for async state updates
+
+### Test Coverage
+Current coverage (as of 2025-12-07):
+- **AuthContext**: 18 tests covering all authentication flows
+
+Priority test coverage (next to implement):
+1. ClubsDashboard (main page logic)
+2. Modal components (form validation, submission)
+3. Table components (rendering, interactions)
+
 ## Common Tasks
 
 ### Adding a New Admin-Only Feature
 1. Pass `isAdmin` prop from parent component
 2. Conditionally render using `{isAdmin && ...}`
 3. Test with both admin and member roles
+4. Write tests for both states
 
 ### Creating a New Modal
 1. Create modal component in `src/components/modals/`
 2. Accept `isOpen`, `onClose` props
 3. Use consistent styling (gradient bg, border, rounded-2xl)
 4. Add state for modal in parent component
+5. Write tests for open/close, validation, submission
 
 ### Fetching Data
 1. Use Supabase Edge Functions via `supabase.functions.invoke()`
 2. Handle loading state
 3. Handle errors with try/catch
 4. Log requests for debugging (see ClubsDashboard for examples)
+5. Mock Edge Function responses in tests
 
 ## Known Issues
 - None currently
