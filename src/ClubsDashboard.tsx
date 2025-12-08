@@ -103,27 +103,57 @@ export default function ClubsDashboard() {
 
   const fetchClubDetails = async (clubId: string) => {
     try {
+      console.log('🏢 [CLUB-FETCH] Starting fetchClubDetails for clubId:', clubId)
+      console.log('🏢 [CLUB-FETCH] Selected server:', selectedServer)
+      
       setClubLoading(true) // Start loading
       setError(null)
       
       // Build URL with query parameters since Edge Function expects GET with query params
       const functionName = `club?id=${encodeURIComponent(clubId)}&server_id=${encodeURIComponent(selectedServer)}`
+      console.log('🏢 [CLUB-FETCH] Calling Edge Function with URL:', functionName)
       
       const { data, error } = await supabase.functions.invoke(functionName, {
         method: 'GET'
       })
-
-      if (error) throw error
+  
+      console.log('🏢 [CLUB-FETCH] Edge Function response:', { 
+        success: !error, 
+        error: error?.message || null,
+        hasData: !!data,
+        dataKeys: data ? Object.keys(data) : null
+      })
+  
+      if (error) {
+        console.error('🏢 [CLUB-FETCH] Edge Function error:', error)
+        throw error
+      }
+      
+      console.log('🏢 [CLUB-FETCH] Setting selected club:', {
+        clubId: data?.id,
+        clubName: data?.name,
+        hasActiveSession: !!data?.active_session,
+        membersCount: data?.members?.length || 0
+      })
       
       setSelectedClub(data)
+      console.log('🏢 [CLUB-FETCH] Successfully completed fetchClubDetails')
+      
     } catch (err: unknown) {
-      console.error('Error fetching club details:', err)
+      console.error('🏢 [CLUB-FETCH] ERROR in fetchClubDetails:', err)
+      console.error('🏢 [CLUB-FETCH] Error details:', {
+        message: err && typeof err === 'object' && 'message' in err ? err.message : String(err),
+        clubId,
+        selectedServer
+      })
+      
       setError(
         err && typeof err === 'object' && 'message' in err
           ? String(err.message)
           : 'Failed to fetch club details'
       )
     } finally {
+      console.log('🏢 [CLUB-FETCH] Setting clubLoading to false')
       setClubLoading(false) // Stop loading
     }
   }

@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+// src/contexts/AuthContext.tsx
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
 import { supabase } from '../supabase'
 import type { User } from '@supabase/supabase-js'
 import type { Member } from '../types'
@@ -30,6 +31,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [member, setMember] = useState<Member | null>(null)
   const [loading, setLoading] = useState(true)
+  
+  // Use ref for immediate synchronous tracking of processing state
+  const processingUserIdRef = useRef<string | null>(null)
   
   // Check if user is admin
   const isAdmin = member?.role === 'admin'
@@ -114,9 +118,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const handleUserChange = async (newUser: User | null) => {
     console.log('🚀 handleUserChange called with user:', newUser?.email)
     
-    // Prevent duplicate calls for the same user
-    if (newUser?.id === user?.id) {
-      console.log('⚡ Skipping duplicate handleUserChange for same user')
+    // Prevent duplicate calls - check both current user and ref immediately
+    if (newUser?.id === user?.id || newUser?.id === processingUserIdRef.current) {
+      console.log('⚡ Skipping duplicate handleUserChange for same user or already processing')
       return
     }
     
@@ -125,8 +129,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!newUser) {
       console.log('❌ No user, clearing member')
       setMember(null)
+      processingUserIdRef.current = null
       return
     }
+
+    // Mark this user as being processed (immediate, synchronous)
+    processingUserIdRef.current = newUser.id
 
     try {
       console.log('🔄 Starting member lookup...')
@@ -149,6 +157,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('💥 Error in handleUserChange:', error)
       setMember(null)
+    } finally {
+      // Clear the processing flag (immediate, synchronous)
+      processingUserIdRef.current = null
     }
   }
 
