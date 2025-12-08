@@ -104,7 +104,7 @@ export default function MemberModal({
           ...memberData
         }
 
-        const { data, error } = await supabase.functions.invoke('member', {
+        const { error } = await supabase.functions.invoke('member', {
           method: 'PUT',
           body: requestBody
         })

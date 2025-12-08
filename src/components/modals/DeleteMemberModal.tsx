@@ -4,7 +4,7 @@ import { supabase } from '../../supabase'
 interface DeleteMemberModalProps {
   isOpen: boolean
   onClose: () => void
-  memberToDelete: any
+  memberToDelete: Member | null
   onMemberDeleted: () => void
   onError: (error: string) => void
 }

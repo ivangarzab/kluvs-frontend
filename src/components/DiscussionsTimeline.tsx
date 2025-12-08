@@ -1,34 +1,31 @@
 import { useEffect, useRef } from 'react'
-import type { Club } from '../types'
+import type { Club, Discussion } from '../types'
 
 interface DiscussionsTimelineProps {
   selectedClub: Club
   isAdmin: boolean
   onAddDiscussion: () => void
-  onEditDiscussion?: (discussion: any) => void
-  onDeleteDiscussion?: (discussion: any) => void
+  onEditDiscussion?: (discussion: Discussion) => void
+  onDeleteDiscussion?: (discussion: Discussion) => void
 }
 
-export default function DiscussionsTimeline({ 
-  selectedClub, 
+export default function DiscussionsTimeline({
+  selectedClub,
   isAdmin,
   onAddDiscussion,
   onEditDiscussion,
-  onDeleteDiscussion 
+  onDeleteDiscussion
 }: DiscussionsTimelineProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
-  // Don't show timeline if no active session
-  if (!selectedClub.active_session) {
-    return null
-  }
-
   const now = new Date()
-  
-  // Sort discussions chronologically
-  const sortedDiscussions = [...selectedClub.active_session.discussions].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-  )
+
+  // Sort discussions chronologically (handle null active_session)
+  const sortedDiscussions = selectedClub.active_session
+    ? [...selectedClub.active_session.discussions].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      )
+    : []
 
   // Helper function to determine if discussion is in the past
   const isPastDiscussion = (date: string) => new Date(date) < now
@@ -44,13 +41,13 @@ export default function DiscussionsTimeline({
       const container = scrollContainerRef.current
       const discussionCards = container.querySelectorAll('.discussion-card')
       const targetCard = discussionCards[nextDiscussionIndex] as HTMLElement
-      
+
       if (targetCard) {
         const containerWidth = container.offsetWidth
         const cardLeft = targetCard.offsetLeft
         const cardWidth = targetCard.offsetWidth
         const scrollPosition = cardLeft - (containerWidth / 2) + (cardWidth / 2)
-        
+
         container.scrollTo({
           left: Math.max(0, scrollPosition),
           behavior: 'smooth'
@@ -58,6 +55,11 @@ export default function DiscussionsTimeline({
       }
     }
   }, [nextDiscussionIndex, sortedDiscussions.length])
+
+  // Don't show timeline if no active session
+  if (!selectedClub.active_session) {
+    return null
+  }
 
   // Helper function to format date
   const formatDate = (dateString: string) => {

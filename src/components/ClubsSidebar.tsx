@@ -19,7 +19,7 @@ export default function ClubsSidebar({
   onAddClub,
   onDeleteClub
 }: ClubsSidebarProps) {
-  const { user, member, refreshMemberData, signOut, isAdmin } = useAuth()
+  const { user, member, refreshMemberData, isAdmin } = useAuth()
 
   const [showSignOutModal, setShowSignOutModal] = useState(false)
 
@@ -129,7 +129,7 @@ export default function ClubsSidebar({
               <p className="text-blue-200/50 text-sm mt-1">Create your first book club!</p>
             </div>
           ) : (
-            selectedServerData?.clubs.map((club, index) => (
+            selectedServerData?.clubs.map((club) => (
               <div 
                 key={club.id}
                 className={`relative p-4 cursor-pointer transition-all duration-300 border-b border-white/5 last:border-b-0 hover:bg-white/8 group ${

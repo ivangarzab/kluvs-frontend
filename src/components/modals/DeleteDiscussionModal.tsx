@@ -5,7 +5,7 @@ import type { Club } from '../../types'
 interface DeleteDiscussionModalProps {
   isOpen: boolean
   onClose: () => void
-  discussionToDelete: any
+  discussionToDelete: Discussion | null
   selectedClub: Club
   onDiscussionDeleted: () => void
   onError: (error: string) => void
