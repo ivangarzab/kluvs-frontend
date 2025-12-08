@@ -1,5 +1,5 @@
 // src/contexts/AuthContext.tsx
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '../supabase'
 import type { User } from '@supabase/supabase-js'
 import type { Member } from '../types'
@@ -115,17 +115,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   // Handle member lookup/creation when user changes
-  const handleUserChange = async (newUser: User | null) => {
+  const handleUserChange = useCallback(async (newUser: User | null) => {
     console.log('🚀 handleUserChange called with user:', newUser?.email)
-    
+
     // Prevent duplicate calls - check both current user and ref immediately
-    if (newUser?.id === user?.id || newUser?.id === processingUserIdRef.current) {
-      console.log('⚡ Skipping duplicate handleUserChange for same user or already processing')
+    if (newUser?.id === processingUserIdRef.current) {
+      console.log('⚡ Skipping duplicate handleUserChange - already processing this user')
       return
     }
-    
+
     setUser(newUser)
-    
+
     if (!newUser) {
       console.log('❌ No user, clearing member')
       setMember(null)
@@ -138,12 +138,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       console.log('🔄 Starting member lookup...')
-      
+
       // Look up member by user_id
       const memberData = await findMemberByUserId(newUser.id)
-      
+
       console.log('🎯 Member lookup completed:', memberData)
-      
+
       // If no member found, create one for new users
       if (!memberData) {
         console.log('🆕 No member found, creating new one...')
@@ -161,7 +161,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Clear the processing flag (immediate, synchronous)
       processingUserIdRef.current = null
     }
-  }
+  }, [])
 
   // Sign in with Discord
   const signInWithDiscord = async () => {
@@ -197,8 +197,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
+      console.log('🔓 Signing out...')
       const { error } = await supabase.auth.signOut()
       if (error) throw error
+
+      // Immediately clear local state
+      setUser(null)
+      setMember(null)
+      processingUserIdRef.current = null
+      console.log('✅ Sign out successful')
     } catch (error) {
       console.error('Error signing out:', error)
       throw error

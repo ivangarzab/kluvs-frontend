@@ -18,10 +18,13 @@ export default function SignOutModal({
     try {
       setLoading(true)
       await signOut()
-      // No need to close modal - user will be redirected to login page
+      // Close the modal after successful sign out
+      onClose()
+      // User state will change and App.tsx will show LoginPage
     } catch (error) {
       console.error('Sign out error:', error)
       setLoading(false)
+      // Keep modal open on error so user can retry
     }
   }
 
