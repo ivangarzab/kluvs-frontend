@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from './supabase'
 import type { Club, Server, Discussion, Member } from "./types"
 import AddClubModal from './components/modals/AddClubModal'
@@ -53,20 +53,15 @@ export default function ClubsDashboard() {
   const [showDeleteMemberModal, setShowDeleteMemberModal] = useState(false)
   const [memberToDelete, setMemberToDelete] = useState<Member | null>(null)
 
-  // Fetch servers on component mount
-  useEffect(() => {
-    fetchServers(false) // Don't preserve selection on initial load
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const fetchServers = async (preserveSelection = true) => {
+  // Fetch servers function with useCallback to prevent infinite loops
+  const fetchServers = useCallback(async (preserveSelection = true) => {
     try {
       setLoading(true)
       setError(null)
-      
+
       // Preserve current selection if requested
       const currentSelection = preserveSelection ? selectedServer : null
-      
+
       const { data, error } = await supabase.functions.invoke('server', {
         method: 'GET'
       })
@@ -75,7 +70,7 @@ export default function ClubsDashboard() {
 
       if (data?.servers) {
         setServers(data.servers)
-        
+
         // Smart selection logic
         if (currentSelection && data.servers.find((s: Server) => s.id === currentSelection)) {
           // Preserve selection if the server still exists
@@ -100,7 +95,12 @@ export default function ClubsDashboard() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [selectedServer])
+
+  // Fetch servers on component mount
+  useEffect(() => {
+    fetchServers(false) // Don't preserve selection on initial load
+  }, [fetchServers])
 
   const fetchClubDetails = async (clubId: string) => {
     try {
