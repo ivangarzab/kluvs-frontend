@@ -56,7 +56,8 @@ export default function ClubsDashboard() {
   // Fetch servers on component mount
   useEffect(() => {
     fetchServers(false) // Don't preserve selection on initial load
-  }, [fetchServers])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const fetchServers = async (preserveSelection = true) => {
     try {
