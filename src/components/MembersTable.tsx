@@ -1,11 +1,11 @@
-import type { Club } from '../types'
+import type { Club, Member } from '../types'
 
 interface MembersTableProps {
   selectedClub: Club
   isAdmin: boolean
   onAddMember: () => void
-  onEditMember: (member: any) => void
-  onDeleteMember: (member: any) => void
+  onEditMember: (member: Member) => void
+  onDeleteMember: (member: Member) => void
 }
 
 export default function MembersTable({ 

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 import { AuthProvider, useAuth } from '../../contexts/AuthContext'
-import { createMockSupabaseClient, createMockUser, setupAuthMocks, mockEdgeFunctionResponse } from '../utils/supabase-mock'
+import { createMockUser, setupAuthMocks, mockEdgeFunctionResponse } from '../utils/supabase-mock'
 import { mockAdminMember, mockRegularMember } from '../utils/mocks'
 
 // Mock the supabase module with factory function

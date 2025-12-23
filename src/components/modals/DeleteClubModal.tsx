@@ -17,7 +17,7 @@ export default function DeleteClubModal({
   onClose,
   clubToDelete,
   selectedServer,
-  selectedClub,
+
   onClubDeleted,
   onError
 }: DeleteClubModalProps) {

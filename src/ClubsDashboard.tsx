@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabase'
-import type { Club, Server } from './types'
+import type { Club, Server, Discussion, Member } from "./types"
 import AddClubModal from './components/modals/AddClubModal'
 import EditBookModal from './components/modals/EditBookModal'
 import NewSessionModal from './components/modals/NewSessionModal'
@@ -35,11 +35,11 @@ export default function ClubsDashboard() {
   
   // Discussion Modal State
   const [showAddDiscussionModal, setShowAddDiscussionModal] = useState(false)
-  const [editingDiscussion, setEditingDiscussion] = useState<any>(null)
+  const [editingDiscussion, setEditingDiscussion] = useState<Discussion | null>(null)
   
   // Delete Discussion Modal State
   const [showDeleteDiscussionModal, setShowDeleteDiscussionModal] = useState(false)
-  const [discussionToDelete, setDiscussionToDelete] = useState<any>(null)
+  const [discussionToDelete, setDiscussionToDelete] = useState<Discussion | null>(null)
   
   // Delete Club Modal State
   const [showDeleteClubModal, setShowDeleteClubModal] = useState(false)
@@ -47,25 +47,26 @@ export default function ClubsDashboard() {
 
   // Member Modal State
   const [showMemberModal, setShowMemberModal] = useState(false)
-  const [editingMember, setEditingMember] = useState<any>(null)
+  const [editingMember, setEditingMember] = useState<Member | null>(null)
 
   // Delete Member Modal State
   const [showDeleteMemberModal, setShowDeleteMemberModal] = useState(false)
-  const [memberToDelete, setMemberToDelete] = useState<any>(null)
+  const [memberToDelete, setMemberToDelete] = useState<Member | null>(null)
 
   // Fetch servers on component mount
   useEffect(() => {
     fetchServers(false) // Don't preserve selection on initial load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchServers = async (preserveSelection = true) => {
     try {
       setLoading(true)
       setError(null)
-      
+
       // Preserve current selection if requested
       const currentSelection = preserveSelection ? selectedServer : null
-      
+
       const { data, error } = await supabase.functions.invoke('server', {
         method: 'GET'
       })
@@ -74,7 +75,7 @@ export default function ClubsDashboard() {
 
       if (data?.servers) {
         setServers(data.servers)
-        
+
         // Smart selection logic
         if (currentSelection && data.servers.find((s: Server) => s.id === currentSelection)) {
           // Preserve selection if the server still exists
@@ -170,12 +171,12 @@ export default function ClubsDashboard() {
     setShowAddDiscussionModal(true)
   }
 
-  const handleEditDiscussion = (discussion: any) => {
+  const handleEditDiscussion = (discussion: Discussion) => {
     setEditingDiscussion(discussion)
     setShowAddDiscussionModal(true)
   }
 
-  const handleDeleteDiscussion = (discussion: any) => {
+  const handleDeleteDiscussion = (discussion: Discussion) => {
     setDiscussionToDelete(discussion)
     setShowDeleteDiscussionModal(true)
   }
@@ -186,12 +187,12 @@ export default function ClubsDashboard() {
     setShowMemberModal(true)
   }
 
-  const handleEditMember = (member: any) => {
+  const handleEditMember = (member: Member) => {
     setEditingMember(member)
     setShowMemberModal(true)
   }
 
-  const handleDeleteMember = (member: any) => {
+  const handleDeleteMember = (member: Member) => {
     setMemberToDelete(member)
     setShowDeleteMemberModal(true)
   }

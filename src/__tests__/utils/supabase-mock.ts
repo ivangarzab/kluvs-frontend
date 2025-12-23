@@ -25,7 +25,7 @@ export function createMockSupabaseClient() {
       signOut: vi.fn().mockResolvedValue({
         error: null,
       }),
-      onAuthStateChange: vi.fn((callback) => {
+      onAuthStateChange: vi.fn(() => {
         // Return subscription object
         return {
           data: {

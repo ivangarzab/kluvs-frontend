@@ -15,7 +15,7 @@ interface DiscussionModalProps {
   selectedClub: Club
   onDiscussionSaved: () => void
   onError: (error: string) => void
-  editingDiscussion?: Discussion // If provided, we're editing instead of adding
+  editingDiscussion?: Discussion | null // If provided, we're editing instead of adding
 }
 
 interface DiscussionFormData {

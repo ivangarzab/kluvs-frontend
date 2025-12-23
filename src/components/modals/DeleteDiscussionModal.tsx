@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { supabase } from '../../supabase'
-import type { Club } from '../../types'
+import type { Club, Discussion } from '../../types'
 
 interface DeleteDiscussionModalProps {
   isOpen: boolean
   onClose: () => void
-  discussionToDelete: any
+  discussionToDelete: Discussion | null
   selectedClub: Club
   onDiscussionDeleted: () => void
   onError: (error: string) => void

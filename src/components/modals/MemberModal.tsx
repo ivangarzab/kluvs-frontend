@@ -9,7 +9,7 @@ interface MemberModalProps {
   selectedServerData: Server | undefined
   onMemberSaved: () => void
   onError: (error: string) => void
-  editingMember?: Member // If provided, we're editing instead of adding
+  editingMember?: Member | null // If provided, we're editing instead of adding
 }
 
 interface MemberFormData {
@@ -104,7 +104,7 @@ export default function MemberModal({
           ...memberData
         }
 
-        const { data, error } = await supabase.functions.invoke('member', {
+        const { error } = await supabase.functions.invoke('member', {
           method: 'PUT',
           body: requestBody
         })
