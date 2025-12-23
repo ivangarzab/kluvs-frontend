@@ -26,7 +26,10 @@ npm run dev
 
 ## 📋 Prerequisites
 
-- **Node.js** v18+ ([Download](https://nodejs.org/))
+- **Node.js** v20+ ([Download](https://nodejs.org/))
+  - ⚠️ Node 18 is not supported (reaches EOL April 2025)
+  - ✅ Node 20 LTS (recommended)
+  - ✅ Node 22 (latest)
 - **npm** (comes with Node.js)
 - **Git**
 - **Supabase account** (for backend services)
