@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../../supabase'
+import type { Member } from '../../types'
 
 interface DeleteMemberModalProps {
   isOpen: boolean

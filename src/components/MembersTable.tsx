@@ -1,4 +1,4 @@
-import type { Club } from '../types'
+import type { Club, Member } from '../types'
 
 interface MembersTableProps {
   selectedClub: Club

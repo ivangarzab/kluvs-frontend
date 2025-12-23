@@ -24,7 +24,7 @@ vi.mock('../supabase', () => {
 
 // Mock child components to simplify testing
 vi.mock('../components/ClubsSidebar', () => ({
-  default: ({ selectedClub, onClubSelect, onAddClub }: any) => (
+  default: ({ onClubSelect, onAddClub }: any) => (
     <div data-testid="clubs-sidebar">
       <button onClick={onAddClub} data-testid="sidebar-add-club">Add Club</button>
       <button onClick={() => onClubSelect('club-1')} data-testid="select-club-1">
@@ -35,9 +35,9 @@ vi.mock('../components/ClubsSidebar', () => ({
 }))
 
 vi.mock('../components/CurrentReadingCard', () => ({
-  default: ({ selectedClub }: any) => (
+  default: () => (
     <div data-testid="current-reading-card">
-      {selectedClub?.active_session ? 'Has Session' : 'No Session'}
+      Current Reading Card
     </div>
   ),
 }))
