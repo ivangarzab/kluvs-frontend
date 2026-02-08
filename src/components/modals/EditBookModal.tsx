@@ -111,10 +111,18 @@ export default function EditBookModal({
     onClose()
   }
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !loading) handleClose()
+    }
+    if (isOpen) document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, loading])
+
   if (!isOpen || !selectedClub.active_session) return null
 
   return (
-    <div className="fixed inset-0 bg-[var(--color-overlay)] flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-[var(--color-overlay)] flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title-edit-book">
       <div className="bg-[var(--color-bg-raised)] rounded-card border border-[var(--color-divider)] p-6 w-full max-w-md">
         {/* Modal Header */}
         <div className="flex items-center justify-between mb-6">
@@ -123,7 +131,7 @@ export default function EditBookModal({
               <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" /></svg>
             </div>
             <div>
-              <h2 className="text-card-heading text-[var(--color-text-primary)]">Edit Book</h2>
+              <h2 id="modal-title-edit-book" className="text-card-heading text-[var(--color-text-primary)]">Edit Book</h2>
               <p className="text-helper text-[var(--color-text-secondary)]">Update current reading details</p>
             </div>
           </div>
@@ -131,6 +139,7 @@ export default function EditBookModal({
             onClick={handleClose}
             className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors p-1"
             disabled={loading}
+            aria-label="Close"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>

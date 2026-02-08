@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../supabase'
 import type { Club, Discussion } from '../../types'
 
@@ -62,10 +62,18 @@ export default function DeleteDiscussionModal({
     }
   }
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !loading) onClose()
+    }
+    if (isOpen) document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, loading])
+
   if (!isOpen || !discussionToDelete) return null
 
   return (
-    <div className="fixed inset-0 bg-[var(--color-overlay)] flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-[var(--color-overlay)] flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title-delete-discussion">
       <div className="bg-[var(--color-bg-raised)] rounded-card border border-[var(--color-divider)] p-6 w-full max-w-md">
         {/* Modal Header */}
         <div className="flex items-center space-x-3 mb-6">
@@ -75,7 +83,7 @@ export default function DeleteDiscussionModal({
             </svg>
           </div>
           <div>
-            <h2 className="text-card-heading text-[var(--color-text-primary)]">Delete Discussion</h2>
+            <h2 id="modal-title-delete-discussion" className="text-card-heading text-[var(--color-text-primary)]">Delete Discussion</h2>
             <p className="text-helper text-[var(--color-text-secondary)]">This action cannot be undone</p>
           </div>
         </div>

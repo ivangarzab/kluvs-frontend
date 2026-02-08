@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../supabase'
 import type { Server } from '../../types'
 
@@ -82,10 +82,18 @@ export default function AddClubModal({
     onClose()
   }
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !loading) handleClose()
+    }
+    if (isOpen) document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, loading])
+
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-[var(--color-overlay)] flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-[var(--color-overlay)] flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title-add-club">
       <div className="bg-[var(--color-bg-raised)] rounded-card border border-[var(--color-divider)] p-6 w-full max-w-md">
         {/* Modal Header */}
         <div className="flex items-center justify-between mb-6">
@@ -96,7 +104,7 @@ export default function AddClubModal({
               </svg>
             </div>
             <div>
-              <h2 className="text-card-heading text-[var(--color-text-primary)]">Add New Club</h2>
+              <h2 id="modal-title-add-club" className="text-card-heading text-[var(--color-text-primary)]">Add New Club</h2>
               <p className="text-helper text-[var(--color-text-secondary)]">Create a book club for your server</p>
             </div>
           </div>

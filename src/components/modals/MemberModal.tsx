@@ -197,10 +197,18 @@ export default function MemberModal({
     onClose()
   }
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !loading) handleClose()
+    }
+    if (isOpen) document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, loading])
+
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-[var(--color-overlay)] flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-[var(--color-overlay)] flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title-member">
       <div className="bg-[var(--color-bg-raised)] rounded-card border border-[var(--color-divider)] p-6 w-full max-w-md">
         {/* Modal Header */}
         <div className="flex items-center justify-between mb-6">
@@ -211,7 +219,7 @@ export default function MemberModal({
               </svg>
             </div>
             <div>
-              <h2 className="text-card-heading text-[var(--color-text-primary)]">
+              <h2 id="modal-title-member" className="text-card-heading text-[var(--color-text-primary)]">
                 {isEditing ? 'Edit Member' : 'Add Member'}
               </h2>
               <p className="text-helper text-[var(--color-text-secondary)]">
@@ -223,6 +231,7 @@ export default function MemberModal({
             onClick={handleClose}
             className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors p-1"
             disabled={loading}
+            aria-label="Close"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />

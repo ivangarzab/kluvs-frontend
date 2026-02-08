@@ -20,7 +20,7 @@ export default function TopNavbar({ servers, selectedServer, onServerChange, onM
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-40 h-16 bg-[var(--color-bg)] border-b border-[var(--color-divider)]">
+      <header className="fixed top-0 left-0 right-0 z-40 h-16 bg-[var(--color-bg)] border-b border-[var(--color-divider)] transition-colors">
         <div className="h-full px-4 sm:px-6 flex items-center justify-between">
           {/* Left: Logo, Brand & Hamburger */}
           <div className="flex items-center gap-3">
@@ -65,6 +65,9 @@ export default function TopNavbar({ servers, selectedServer, onServerChange, onM
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className="flex items-center gap-2 px-3 py-1.5 rounded-btn text-sm hover:bg-[var(--color-bg-elevated)] transition-colors"
+                aria-label="User menu"
+                aria-expanded={showUserMenu}
+                aria-haspopup="true"
               >
                 <div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">
                   {member?.name?.[0]?.toUpperCase() || '?'}
@@ -82,9 +85,10 @@ export default function TopNavbar({ servers, selectedServer, onServerChange, onM
               {/* Dropdown Menu */}
               {showUserMenu && (
                 <>
-                  <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
-                  <div className="absolute right-0 top-full mt-1 z-50 w-48 bg-[var(--color-bg-raised)] border border-[var(--color-divider)] rounded-card shadow-lg py-1">
+                  <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} aria-hidden="true" />
+                  <div className="absolute right-0 top-full mt-1 z-50 w-48 bg-[var(--color-bg-raised)] border border-[var(--color-divider)] rounded-card shadow-lg py-1" role="menu">
                     <button
+                      role="menuitem"
                       onClick={() => {
                         setShowEditProfileModal(true)
                         setShowUserMenu(false)
@@ -95,6 +99,7 @@ export default function TopNavbar({ servers, selectedServer, onServerChange, onM
                     </button>
                     <div className="border-t border-[var(--color-divider)] my-1" />
                     <button
+                      role="menuitem"
                       onClick={() => {
                         setShowSignOutModal(true)
                         setShowUserMenu(false)
