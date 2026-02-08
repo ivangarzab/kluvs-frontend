@@ -31,34 +31,36 @@ export default function SignOutModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-800 rounded-2xl border border-blue-300/30 p-6 w-full max-w-sm shadow-2xl">
+    <div className="fixed inset-0 bg-[var(--color-overlay)] flex items-center justify-center z-50 p-4">
+      <div className="bg-[var(--color-bg-raised)] rounded-card border border-[var(--color-divider)] p-6 w-full max-w-sm">
         {/* Modal Header */}
         <div className="text-center mb-6">
-          <div className="h-12 w-12 bg-gradient-to-r from-blue-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg mx-auto mb-4">
-            <span className="text-white font-bold text-xl">👋</span>
+          <div className="h-12 w-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+            </svg>
           </div>
-          <h2 className="text-xl font-bold text-white mb-2">Sign Out?</h2>
-          <p className="text-blue-200/70 text-sm">You'll be redirected to the login page</p>
+          <h2 className="text-card-heading text-[var(--color-text-primary)] mb-2">Sign Out?</h2>
+          <p className="text-helper text-[var(--color-text-secondary)]">You'll be redirected to the login page</p>
         </div>
 
         {/* Modal Footer */}
         <div className="flex items-center justify-between space-x-3">
           <button
             onClick={onClose}
-            className="flex-1 bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl font-medium transition-all duration-200 border border-blue-300/30"
+            className="flex-1 text-[var(--color-text-primary)] px-4 py-2.5 rounded-btn font-medium transition-colors border border-[var(--color-divider)] hover:bg-[var(--color-bg-elevated)]"
             disabled={loading}
           >
             Cancel
           </button>
-          
+
           <button
             onClick={handleSignOut}
             disabled={loading}
-            className="flex-1 bg-red-500/20 hover:bg-red-500/30 text-red-200 px-4 py-2.5 rounded-xl font-medium transition-all duration-200 border border-red-400/30 flex items-center justify-center"
+            className="flex-1 bg-danger hover:bg-danger-hover text-white px-4 py-2.5 rounded-btn font-medium transition-colors flex items-center justify-center"
           >
             {loading ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-red-200 border-t-transparent"></div>
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
             ) : (
               <span>Sign Out</span>
             )}

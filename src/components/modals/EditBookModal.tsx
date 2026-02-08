@@ -39,7 +39,7 @@ export default function EditBookModal({
     if (isOpen && selectedClub.active_session) {
       const book = selectedClub.active_session.book
       const session = selectedClub.active_session
-      
+
       setFormData({
         title: book.title || '',
         author: book.author || '',
@@ -114,25 +114,25 @@ export default function EditBookModal({
   if (!isOpen || !selectedClub.active_session) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-800 rounded-2xl border border-blue-300/30 p-6 w-full max-w-md shadow-2xl">
+    <div className="fixed inset-0 bg-[var(--color-overlay)] flex items-center justify-center z-50 p-4">
+      <div className="bg-[var(--color-bg-raised)] rounded-card border border-[var(--color-divider)] p-6 w-full max-w-md">
         {/* Modal Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 bg-gradient-to-r from-blue-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-lg">📖</span>
+            <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" /></svg>
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">Edit Book</h2>
-              <p className="text-blue-200/70 text-sm">Update current reading details</p>
+              <h2 className="text-card-heading text-[var(--color-text-primary)]">Edit Book</h2>
+              <p className="text-helper text-[var(--color-text-secondary)]">Update current reading details</p>
             </div>
           </div>
           <button
             onClick={handleClose}
-            className="text-white/60 hover:text-white transition-colors p-1"
+            className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors p-1"
             disabled={loading}
           >
-            <span className="text-xl">✕</span>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
 
@@ -140,15 +140,15 @@ export default function EditBookModal({
         <div className="space-y-4">
           {/* Book Title Field */}
           <div>
-            <label className="block text-white font-medium mb-2">
-              Book Title <span className="text-orange-400">*</span>
+            <label className="block text-[var(--color-text-primary)] font-medium mb-2">
+              Book Title <span className="text-primary">*</span>
             </label>
             <input
               type="text"
               value={formData.title}
               onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
               placeholder="e.g., The Lord of the Rings"
-              className="w-full bg-white/10 backdrop-blur-md border border-blue-300/30 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all duration-200"
+              className="w-full bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-input px-4 py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               disabled={loading}
               maxLength={200}
             />
@@ -156,15 +156,15 @@ export default function EditBookModal({
 
           {/* Author Field */}
           <div>
-            <label className="block text-white font-medium mb-2">
-              Author <span className="text-orange-400">*</span>
+            <label className="block text-[var(--color-text-primary)] font-medium mb-2">
+              Author <span className="text-primary">*</span>
             </label>
             <input
               type="text"
               value={formData.author}
               onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
               placeholder="e.g., J.R.R. Tolkien"
-              className="w-full bg-white/10 backdrop-blur-md border border-blue-300/30 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all duration-200"
+              className="w-full bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-input px-4 py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               disabled={loading}
               maxLength={100}
             />
@@ -172,15 +172,15 @@ export default function EditBookModal({
 
           {/* Edition Field */}
           <div>
-            <label className="block text-white font-medium mb-2">
-              Edition <span className="text-white/50">(optional)</span>
+            <label className="block text-[var(--color-text-primary)] font-medium mb-2">
+              Edition <span className="text-[var(--color-text-secondary)]">(optional)</span>
             </label>
             <input
               type="text"
               value={formData.edition}
               onChange={(e) => setFormData(prev => ({ ...prev, edition: e.target.value }))}
               placeholder="e.g., First, Paperback, 2nd Edition"
-              className="w-full bg-white/10 backdrop-blur-md border border-blue-300/30 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+              className="w-full bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-input px-4 py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               disabled={loading}
               maxLength={50}
             />
@@ -188,8 +188,8 @@ export default function EditBookModal({
 
           {/* Year Field */}
           <div>
-            <label className="block text-white font-medium mb-2">
-              Publication Year <span className="text-white/50">(optional)</span>
+            <label className="block text-[var(--color-text-primary)] font-medium mb-2">
+              Publication Year <span className="text-[var(--color-text-secondary)]">(optional)</span>
             </label>
             <input
               type="number"
@@ -198,53 +198,53 @@ export default function EditBookModal({
               placeholder="e.g., 1954"
               min="1000"
               max={new Date().getFullYear() + 1}
-              className="w-full bg-white/10 backdrop-blur-md border border-blue-300/30 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+              className="w-full bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-input px-4 py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               disabled={loading}
             />
           </div>
 
           {/* Due Date Field */}
           <div>
-            <label className="block text-white font-medium mb-2">
-              Due Date <span className="text-white/50">(optional)</span>
+            <label className="block text-[var(--color-text-primary)] font-medium mb-2">
+              Due Date <span className="text-[var(--color-text-secondary)]">(optional)</span>
             </label>
             <input
               type="date"
               value={formData.due_date}
               onChange={(e) => setFormData(prev => ({ ...prev, due_date: e.target.value }))}
-              className="w-full bg-white/10 backdrop-blur-md border border-blue-300/30 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+              className="w-full bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-input px-4 py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               disabled={loading}
             />
-            <p className="text-blue-200/60 text-xs mt-1">
-              📅 When should members finish reading this book?
+            <p className="text-[var(--color-text-secondary)] text-xs mt-1">
+              When should members finish reading this book?
             </p>
           </div>
 
           {/* Club Context */}
-          <div className="bg-blue-500/10 border border-blue-400/20 rounded-xl p-3">
-            <p className="text-blue-200 text-sm font-medium">
-              📚 Club: <span className="text-white">{selectedClub.name}</span>
+          <div className="bg-[var(--color-bg-elevated)] border border-[var(--color-divider)] rounded-input p-3">
+            <p className="text-[var(--color-text-secondary)] text-sm font-medium">
+              Club: <span className="text-[var(--color-text-primary)]">{selectedClub.name}</span>
             </p>
-            <p className="text-blue-200/60 text-xs mt-1">
+            <p className="text-[var(--color-text-secondary)] text-xs mt-1">
               Updating active reading session
             </p>
           </div>
         </div>
 
         {/* Modal Footer */}
-        <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10">
+        <div className="flex items-center justify-between mt-6 pt-4 border-t border-[var(--color-divider)]">
           <button
             onClick={handleClose}
-            className="text-white/60 hover:text-white transition-colors font-medium"
+            className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors font-medium"
             disabled={loading}
           >
             Cancel
           </button>
-          
+
           <button
             onClick={handleSubmit}
             disabled={loading || !formData.title.trim() || !formData.author.trim()}
-            className="bg-gradient-to-r from-blue-500 to-orange-500 hover:from-blue-600 hover:to-orange-600 disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-xl font-bold transition-all duration-200 hover:scale-105 shadow-lg disabled:hover:scale-100 flex items-center space-x-2"
+            className="bg-primary hover:bg-primary-hover disabled:bg-gray-400 dark:disabled:bg-gray-700 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-btn font-medium transition-colors flex items-center space-x-2"
           >
             {loading ? (
               <>
