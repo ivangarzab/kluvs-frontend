@@ -9,7 +9,8 @@ import MemberModal from './components/modals/MemberModal'
 import DeleteMemberModal from './components/modals/DeleteMemberModal'
 import DeleteDiscussionModal from './components/modals/DeleteDiscussionModal'
 import DeleteClubModal from './components/modals/DeleteClubModal'
-import ClubsSidebar from './components/ClubsSidebar'
+import TopNavbar from './components/layout/TopNavbar'
+import Sidebar from './components/layout/Sidebar'
 import CurrentReadingCard from './components/CurrentReadingCard'
 import DiscussionsTimeline from './components/DiscussionsTimeline'
 import MembersTable from './components/MembersTable'
@@ -201,150 +202,117 @@ export default function ClubsDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-slate-900 to-blue-900 flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--color-bg)] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-400 border-r-transparent mx-auto shadow-lg"></div>
-          <p className="mt-6 text-white/90 text-lg font-medium">Loading your book clubs...</p>
-          <div className="mt-2 text-blue-200 text-sm">📚 Organizing your library</div>
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-r-transparent mx-auto"></div>
+          <p className="mt-6 text-[var(--color-text-primary)] text-lg font-medium">Loading your book clubs...</p>
+          <div className="mt-2 text-[var(--color-text-secondary)] text-sm">Organizing your library</div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-slate-900 to-blue-900">
-      {/* Header with Material Design elevation */}
-      <header className="bg-white/5 backdrop-blur-md border-b border-blue-300/20 shadow-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="h-10 w-10 bg-gradient-to-r from-blue-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200">
-                <span className="text-white font-bold text-lg">📖</span>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-200 to-orange-200 bg-clip-text text-transparent">
-                  Book Club Central
-                </h1>
-                <p className="text-blue-200/70 text-xs font-medium">Admin Dashboard</p>
+    <div className="min-h-screen bg-[var(--color-bg)]">
+      {/* Top Navigation */}
+      <TopNavbar
+        servers={servers}
+        selectedServer={selectedServer}
+        onServerChange={(serverId) => {
+          setSelectedServer(serverId)
+          setSelectedClub(null)
+        }}
+      />
+
+      {/* Sidebar + Main Content */}
+      <div className="flex pt-16">
+        <Sidebar
+          selectedServerData={selectedServerData}
+          selectedClub={selectedClub}
+          onClubSelect={fetchClubDetails}
+          onAddClub={() => setShowAddClubModal(true)}
+          onDeleteClub={confirmDeleteClub}
+          isAdmin={isAdmin}
+        />
+
+        {/* Main Content Area */}
+        <main className="flex-1 lg:ml-64 p-4 sm:p-6">
+          {error && (
+            <div className="mb-6 bg-danger/10 border border-danger/30 rounded-card p-4">
+              <div className="flex items-center">
+                <p className="text-danger font-medium">{error}</p>
               </div>
             </div>
-            
-            {/* Material 3 Server Selector */}
-            {servers.length > 1 && isAdmin && (
-              <select 
-                value={selectedServer} 
-                onChange={(e) => {
-                  setSelectedServer(e.target.value)
-                  setSelectedClub(null)
-                }}
-                className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 px-4 py-2 pr-8 rounded-lg text-sm font-medium transition-all duration-200 border border-blue-400/30 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23bfdbfe%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%2C9%2012%2C15%2018%2C9%22%3E%3C/polyline%3E%3C/svg%3E')] bg-no-repeat bg-[length:16px_16px] bg-[position:right_12px_center]"
-              >
-                {servers.map(server => (
-                  <option key={server.id} value={server.id} className="bg-slate-800 text-white">
-                    {server.name}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
-        </div>
-      </header>
+          )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {error && (
-          <div className="mb-6 bg-red-500/20 backdrop-blur-sm border border-red-400/30 rounded-xl p-4 shadow-lg">
-            <div className="flex items-center">
-              <span className="text-red-300 mr-2">⚠️</span>
-              <p className="text-red-100 font-medium">{error}</p>
+          {clubLoading ? (
+            /* Loading spinner when fetching club data */
+            <div className="bg-[var(--color-bg-raised)] rounded-card border border-[var(--color-divider)] p-12 text-center">
+              <div className="max-w-md mx-auto">
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-r-transparent mx-auto mb-6"></div>
+                <h3 className="text-section-heading text-[var(--color-text-primary)] mb-3">Loading Club Details</h3>
+                <p className="text-[var(--color-text-secondary)]">Fetching the latest information about this book club...</p>
+              </div>
             </div>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Clubs Sidebar */}
-          <ClubsSidebar
-            selectedServerData={selectedServerData}
-            selectedClub={selectedClub}
-            onClubSelect={fetchClubDetails}
-            onAddClub={() => setShowAddClubModal(true)}
-            onDeleteClub={confirmDeleteClub}
-          />
-
-          {/* Main Content Area */}
-          <div className="lg:col-span-3">
-            {clubLoading ? (
-              /* Loading spinner when fetching club data */
-              <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 p-12 text-center shadow-xl">
-                <div className="max-w-md mx-auto">
-                  <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-400 border-r-transparent mx-auto shadow-lg mb-6"></div>
-                  <h3 className="text-2xl font-bold text-white mb-3">Loading Club Details</h3>
-                  <p className="text-white/60 leading-relaxed">Fetching the latest information about this book club...</p>
-                  <div className="mt-6 text-blue-200/50 text-sm">
-                    📚 Gathering all the reading data
+          ) : selectedClub ? (
+            <div className="space-y-6">
+              {/* Club Info */}
+              <div className="bg-[var(--color-bg-raised)] rounded-card border border-[var(--color-divider)] p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-page-heading text-[var(--color-text-primary)]">{selectedClub.name}</h2>
+                    {selectedClub.discord_channel && (
+                      <p className="text-[var(--color-text-secondary)] mt-1 font-medium">Discord: #{selectedClub.discord_channel}</p>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[var(--color-text-secondary)] text-sm font-medium">Server ID</p>
+                    <p className="text-[var(--color-text-primary)] font-mono text-sm bg-[var(--color-bg-elevated)] px-2 py-1 rounded">{selectedClub.server_id}</p>
                   </div>
                 </div>
               </div>
-            ) : selectedClub ? (
-              <div className="space-y-6">
-                {/* Club Info & Stats */}
-                <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 p-6 shadow-xl">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2 className="text-2xl font-bold text-white">{selectedClub.name}</h2>
-                      {selectedClub.discord_channel && (
-                        <p className="text-blue-200 mt-1 font-medium">Discord: #{selectedClub.discord_channel}</p>
-                      )}
-                    </div>
-                    <div className="text-right">
-                      <p className="text-white/60 text-sm font-medium">Server ID</p>
-                      <p className="text-white font-mono text-sm bg-blue-500/20 px-2 py-1 rounded">{selectedClub.server_id}</p>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Hero Current Reading Card */}
-                <CurrentReadingCard
-                  selectedClub={selectedClub}
-                  isAdmin={isAdmin}
-                  onEditBook={() => setShowEditBookModal(true)}
-                  onNewSession={() => setShowNewSessionModal(true)}
-                />
 
-                {/* Discussions Timeline */}
-                <DiscussionsTimeline
-                  selectedClub={selectedClub}
-                  isAdmin={isAdmin}
-                  onAddDiscussion={handleAddDiscussion}
-                  onEditDiscussion={handleEditDiscussion}
-                  onDeleteDiscussion={handleDeleteDiscussion}
-                />
+              {/* Hero Current Reading Card */}
+              <CurrentReadingCard
+                selectedClub={selectedClub}
+                isAdmin={isAdmin}
+                onEditBook={() => setShowEditBookModal(true)}
+                onNewSession={() => setShowNewSessionModal(true)}
+              />
 
-                {/* Material Design Members Table */}
-                <MembersTable 
-                  selectedClub={selectedClub}
-                  isAdmin={isAdmin}
-                  onAddMember={handleAddMember}
-                  onEditMember={handleEditMember}
-                  onDeleteMember={handleDeleteMember}
-                />
-              </div>
-            ) : (
-              /* No club selected state */
-              <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 p-12 text-center shadow-xl">
-                <div className="max-w-md mx-auto">
-                  <div className="h-20 w-20 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <span className="text-4xl">📚</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-3">Select a Book Club</h3>
-                  <p className="text-white/60 leading-relaxed">Choose a club from the sidebar to explore its members, current reading session, and upcoming discussions.</p>
-                  <div className="mt-6 text-blue-200/50 text-sm">
-                    📖 Ready to dive into some great literature?
-                  </div>
+              {/* Discussions Timeline */}
+              <DiscussionsTimeline
+                selectedClub={selectedClub}
+                isAdmin={isAdmin}
+                onAddDiscussion={handleAddDiscussion}
+                onEditDiscussion={handleEditDiscussion}
+                onDeleteDiscussion={handleDeleteDiscussion}
+              />
+
+              {/* Members Table */}
+              <MembersTable
+                selectedClub={selectedClub}
+                isAdmin={isAdmin}
+                onAddMember={handleAddMember}
+                onEditMember={handleEditMember}
+                onDeleteMember={handleDeleteMember}
+              />
+            </div>
+          ) : (
+            /* No club selected state */
+            <div className="bg-[var(--color-bg-raised)] rounded-card border border-[var(--color-divider)] p-12 text-center">
+              <div className="max-w-md mx-auto">
+                <div className="h-20 w-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                  </svg>
                 </div>
+                <h3 className="text-section-heading text-[var(--color-text-primary)] mb-3">Select a Book Club</h3>
+                <p className="text-[var(--color-text-secondary)]">Choose a club from the sidebar to explore its members, current reading session, and upcoming discussions.</p>
               </div>
-            )}
-          </div>
-        </div>
+            </div>
+          )}
+        </main>
       </div>
 
       {/* All Modals - Clean and Organized! */}

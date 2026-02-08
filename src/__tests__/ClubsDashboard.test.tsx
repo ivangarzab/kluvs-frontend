@@ -22,8 +22,27 @@ vi.mock('../supabase', () => {
   }
 })
 
-// Mock child components to simplify testing
-vi.mock('../components/ClubsSidebar', () => ({
+// Mock layout and child components to simplify testing
+vi.mock('../components/layout/TopNavbar', () => ({
+  default: ({ servers, selectedServer, onServerChange }: any) => (
+    <div data-testid="top-navbar">
+      <span>Kluvs</span>
+      {servers.length > 1 && (
+        <select
+          value={selectedServer}
+          onChange={(e: any) => onServerChange(e.target.value)}
+          data-testid="server-selector"
+        >
+          {servers.map((s: any) => (
+            <option key={s.id} value={s.id}>{s.name}</option>
+          ))}
+        </select>
+      )}
+    </div>
+  ),
+}))
+
+vi.mock('../components/layout/Sidebar', () => ({
   default: ({ onClubSelect, onAddClub }: any) => (
     <div data-testid="clubs-sidebar">
       <button onClick={onAddClub} data-testid="sidebar-add-club">Add Club</button>
@@ -120,7 +139,7 @@ describe('ClubsDashboard', () => {
       render(<ClubsDashboard />)
 
       expect(screen.getByText(/Loading your book clubs/i)).toBeInTheDocument()
-      expect(screen.getByText(/📚 Organizing your library/i)).toBeInTheDocument()
+      expect(screen.getByText(/Organizing your library/i)).toBeInTheDocument()
     })
 
     it('should fetch servers on mount', async () => {
@@ -164,7 +183,7 @@ describe('ClubsDashboard', () => {
       render(<ClubsDashboard />)
 
       await waitFor(() => {
-        expect(screen.getByText('Book Club Central')).toBeInTheDocument()
+        expect(screen.getByText('Kluvs')).toBeInTheDocument()
       })
 
       // Server selector should show Blingers' Books as selected
@@ -191,7 +210,7 @@ describe('ClubsDashboard', () => {
       render(<ClubsDashboard />)
 
       await waitFor(() => {
-        expect(screen.getByText('Book Club Central')).toBeInTheDocument()
+        expect(screen.getByText('Kluvs')).toBeInTheDocument()
       })
     })
 
@@ -234,7 +253,7 @@ describe('ClubsDashboard', () => {
       render(<ClubsDashboard />)
 
       await waitFor(() => {
-        expect(screen.getByText('Book Club Central')).toBeInTheDocument()
+        expect(screen.getByText('Kluvs')).toBeInTheDocument()
       })
 
       const selector = screen.queryByRole('combobox')
@@ -263,7 +282,7 @@ describe('ClubsDashboard', () => {
       render(<ClubsDashboard />)
 
       await waitFor(() => {
-        expect(screen.getByText('Book Club Central')).toBeInTheDocument()
+        expect(screen.getByText('Kluvs')).toBeInTheDocument()
       })
 
       // Select a club first
@@ -304,7 +323,7 @@ describe('ClubsDashboard', () => {
       render(<ClubsDashboard />)
 
       await waitFor(() => {
-        expect(screen.getByText('Book Club Central')).toBeInTheDocument()
+        expect(screen.getByText('Kluvs')).toBeInTheDocument()
       })
 
       const selectClubButton = screen.getByTestId('select-club-1')
@@ -342,7 +361,7 @@ describe('ClubsDashboard', () => {
       render(<ClubsDashboard />)
 
       await waitFor(() => {
-        expect(screen.getByText('Book Club Central')).toBeInTheDocument()
+        expect(screen.getByText('Kluvs')).toBeInTheDocument()
       })
 
       const selectClubButton = screen.getByTestId('select-club-1')
@@ -374,7 +393,7 @@ describe('ClubsDashboard', () => {
 
       await waitFor(() => {
         // Component should render even with error
-        expect(screen.getByText('Book Club Central')).toBeInTheDocument()
+        expect(screen.getByText('Kluvs')).toBeInTheDocument()
       })
     })
   })
@@ -396,7 +415,7 @@ describe('ClubsDashboard', () => {
       render(<ClubsDashboard />)
 
       await waitFor(() => {
-        expect(screen.getByText('Book Club Central')).toBeInTheDocument()
+        expect(screen.getByText('Kluvs')).toBeInTheDocument()
       })
 
       const addClubButton = screen.getByTestId('sidebar-add-club')
@@ -424,7 +443,7 @@ describe('ClubsDashboard', () => {
       render(<ClubsDashboard />)
 
       await waitFor(() => {
-        expect(screen.getByText('Book Club Central')).toBeInTheDocument()
+        expect(screen.getByText('Kluvs')).toBeInTheDocument()
       })
 
       // Open modal
@@ -467,8 +486,8 @@ describe('ClubsDashboard', () => {
       render(<ClubsDashboard />)
 
       await waitFor(() => {
-        expect(screen.getByText('Book Club Central')).toBeInTheDocument()
-        expect(screen.getByText('Admin Dashboard')).toBeInTheDocument()
+        expect(screen.getByText('Kluvs')).toBeInTheDocument()
+        expect(screen.getByTestId('top-navbar')).toBeInTheDocument()
         expect(screen.getByTestId('clubs-sidebar')).toBeInTheDocument()
       })
     })
@@ -492,7 +511,7 @@ describe('ClubsDashboard', () => {
       render(<ClubsDashboard />)
 
       await waitFor(() => {
-        expect(screen.getByText('Book Club Central')).toBeInTheDocument()
+        expect(screen.getByText('Kluvs')).toBeInTheDocument()
       })
 
       // Before selecting club, detail components shouldn't show data
