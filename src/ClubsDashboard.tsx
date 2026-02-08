@@ -54,6 +54,9 @@ export default function ClubsDashboard() {
   const [showDeleteMemberModal, setShowDeleteMemberModal] = useState(false)
   const [memberToDelete, setMemberToDelete] = useState<Member | null>(null)
 
+  // Sidebar mobile state
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
   // Fetch servers on component mount
   useEffect(() => {
     fetchServers(false) // Don't preserve selection on initial load
@@ -222,6 +225,7 @@ export default function ClubsDashboard() {
           setSelectedServer(serverId)
           setSelectedClub(null)
         }}
+        onMenuToggle={() => setSidebarOpen(prev => !prev)}
       />
 
       {/* Sidebar + Main Content */}
@@ -229,10 +233,15 @@ export default function ClubsDashboard() {
         <Sidebar
           selectedServerData={selectedServerData}
           selectedClub={selectedClub}
-          onClubSelect={fetchClubDetails}
+          onClubSelect={(clubId) => {
+            setSidebarOpen(false)
+            fetchClubDetails(clubId)
+          }}
           onAddClub={() => setShowAddClubModal(true)}
           onDeleteClub={confirmDeleteClub}
           isAdmin={isAdmin}
+          mobileOpen={sidebarOpen}
+          onMobileClose={() => setSidebarOpen(false)}
         />
 
         {/* Main Content Area */}

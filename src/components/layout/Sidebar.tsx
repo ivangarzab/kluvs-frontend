@@ -7,6 +7,8 @@ interface SidebarProps {
   onAddClub: () => void
   onDeleteClub: (club: { id: string; name: string }) => void
   isAdmin: boolean
+  mobileOpen?: boolean
+  onMobileClose?: () => void
 }
 
 export default function Sidebar({
@@ -16,9 +18,11 @@ export default function Sidebar({
   onAddClub,
   onDeleteClub,
   isAdmin,
+  mobileOpen,
+  onMobileClose,
 }: SidebarProps) {
-  return (
-    <aside className="hidden lg:block fixed top-16 left-0 bottom-0 w-64 bg-[var(--color-bg-raised)] border-r border-[var(--color-divider)] overflow-y-auto">
+  const sidebarContent = (
+    <>
       {/* Clubs Header */}
       <div className="p-4 border-b border-[var(--color-divider)]">
         <div className="flex justify-between items-center">
@@ -93,6 +97,29 @@ export default function Sidebar({
           ))
         )}
       </div>
-    </aside>
+    </>
+  )
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:block fixed top-16 left-0 bottom-0 w-64 bg-[var(--color-bg-raised)] border-r border-[var(--color-divider)] overflow-y-auto">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile drawer */}
+      {mobileOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-[var(--color-overlay)] lg:hidden"
+            onClick={onMobileClose}
+            aria-hidden="true"
+          />
+          <aside className="fixed top-16 left-0 bottom-0 w-64 z-50 bg-[var(--color-bg-raised)] border-r border-[var(--color-divider)] overflow-y-auto lg:hidden">
+            {sidebarContent}
+          </aside>
+        </>
+      )}
+    </>
   )
 }

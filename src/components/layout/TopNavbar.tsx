@@ -9,9 +9,10 @@ interface TopNavbarProps {
   servers: Server[]
   selectedServer: string
   onServerChange: (serverId: string) => void
+  onMenuToggle?: () => void
 }
 
-export default function TopNavbar({ servers, selectedServer, onServerChange }: TopNavbarProps) {
+export default function TopNavbar({ servers, selectedServer, onServerChange, onMenuToggle }: TopNavbarProps) {
   const { member, refreshMemberData, isAdmin } = useAuth()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showSignOutModal, setShowSignOutModal] = useState(false)
@@ -21,12 +22,23 @@ export default function TopNavbar({ servers, selectedServer, onServerChange }: T
     <>
       <header className="fixed top-0 left-0 right-0 z-40 h-16 bg-[var(--color-bg)] border-b border-[var(--color-divider)]">
         <div className="h-full px-4 sm:px-6 flex items-center justify-between">
-          {/* Left: Logo & Brand */}
+          {/* Left: Logo, Brand & Hamburger */}
           <div className="flex items-center gap-3">
             <img src="/ic-mark.svg" alt="Kluvs" className="h-8 w-8" />
             <h1 className="text-section-heading text-[var(--color-text-primary)]">
               Kluvs
             </h1>
+            {onMenuToggle && (
+              <button
+                onClick={onMenuToggle}
+                className="lg:hidden p-2 rounded-btn text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-elevated)] transition-colors"
+                aria-label="Open navigation menu"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+              </button>
+            )}
           </div>
 
           {/* Right: Server selector, Theme toggle, User */}

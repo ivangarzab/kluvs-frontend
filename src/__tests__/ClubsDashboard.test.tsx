@@ -24,9 +24,12 @@ vi.mock('../supabase', () => {
 
 // Mock layout and child components to simplify testing
 vi.mock('../components/layout/TopNavbar', () => ({
-  default: ({ servers, selectedServer, onServerChange }: any) => (
+  default: ({ servers, selectedServer, onServerChange, onMenuToggle }: any) => (
     <div data-testid="top-navbar">
       <span>Kluvs</span>
+      {onMenuToggle && (
+        <button onClick={onMenuToggle} data-testid="menu-toggle">Menu</button>
+      )}
       {servers.length > 1 && (
         <select
           value={selectedServer}
@@ -52,6 +55,7 @@ vi.mock('../components/layout/Sidebar', () => ({
     </div>
   ),
 }))
+
 
 vi.mock('../components/CurrentReadingCard', () => ({
   default: () => (
