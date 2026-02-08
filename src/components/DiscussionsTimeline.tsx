@@ -73,23 +73,26 @@ export default function DiscussionsTimeline({
   }
 
   return (
-    <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 overflow-hidden shadow-2xl">
-      <div className="p-6 border-b border-blue-300/20 bg-gradient-to-r from-blue-600/10 to-orange-600/10">
+    <div className="bg-[var(--color-bg-raised)] rounded-card border border-[var(--color-divider)] overflow-hidden">
+      {/* Header */}
+      <div className="p-6 border-b border-[var(--color-divider)]">
         <div className="flex justify-between items-center">
           <div>
-            <h3 className="font-bold text-white flex items-center text-xl">
-              <span className="mr-3 text-2xl">💬</span>
+            <h3 className="text-section-heading text-[var(--color-text-primary)] flex items-center">
+              <svg className="w-5 h-5 text-primary mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+              </svg>
               Discussion Timeline ({sortedDiscussions.length})
             </h3>
-            <p className="text-blue-200/70 text-sm mt-1">Reading session discussions & events</p>
+            <p className="text-helper text-[var(--color-text-secondary)] mt-1">Reading session discussions & events</p>
           </div>
-          
+
           {/* Action Button Area - Top Right */}
           {isAdmin && (
             <div className="hidden md:flex">
-              <button 
+              <button
                 onClick={onAddDiscussion}
-                className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-blue-400/30"
+                className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-btn text-sm font-medium transition-colors"
               >
                 Add Discussion
               </button>
@@ -102,18 +105,22 @@ export default function DiscussionsTimeline({
         {sortedDiscussions.length === 0 ? (
           /* Empty State */
           <div className="text-center py-8">
-            <div className="text-4xl mb-3">📅</div>
-            <p className="text-white/60 font-medium">No discussions scheduled</p>
-            <p className="text-blue-200/50 text-sm mt-1">Add your first discussion to get started!</p>
+            <div className="h-16 w-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <svg className="w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+              </svg>
+            </div>
+            <p className="text-[var(--color-text-primary)] font-medium">No discussions scheduled</p>
+            <p className="text-[var(--color-text-secondary)] text-helper mt-1">Add your first discussion to get started!</p>
           </div>
         ) : (
           /* Scrollable Horizontal Timeline */
           <div className="relative pb-4 pt-6">
             {/* Scrollable container */}
-            <div 
+            <div
               ref={scrollContainerRef}
               className="flex gap-4 overflow-x-auto pb-6 px-4 pt-4"
-              style={{ 
+              style={{
                 scrollSnapType: 'x mandatory',
                 msOverflowStyle: 'none',
                 scrollbarWidth: 'none'
@@ -123,84 +130,85 @@ export default function DiscussionsTimeline({
                 const isPast = isPastDiscussion(discussion.date)
                 const dateInfo = formatDate(discussion.date)
                 const isNext = index === nextDiscussionIndex
-                
+
                 return (
-                  <div 
-                    key={discussion.id} 
-                    className={`discussion-card flex-shrink-0 w-64 relative transition-all duration-300 ${
-                      isNext ? 'scale-105' : 'scale-100'
-                    }`}
+                  <div
+                    key={discussion.id}
+                    className="discussion-card flex-shrink-0 w-64 relative"
                     style={{ scrollSnapAlign: 'center' }}
                   >
                     {/* Discussion Card */}
-                    <div className={`group bg-white/5 backdrop-blur-sm rounded-xl p-4 border transition-all duration-200 hover:bg-white/10 relative ${
-                      isPast 
-                        ? 'border-gray-500/30 opacity-60' 
+                    <div className={`group rounded-card p-4 border transition-colors relative ${
+                      isPast
+                        ? 'bg-[var(--color-bg-elevated)] border-[var(--color-divider)] opacity-60'
                         : isNext
-                        ? 'border-orange-400/50 bg-orange-500/5'
-                        : 'border-blue-400/30 hover:border-orange-400/50'
+                        ? 'bg-primary/5 border-primary/30 border-l-4 border-l-primary'
+                        : 'bg-[var(--color-bg)] border-[var(--color-divider)] hover:border-primary/30'
                     }`}>
-                      
+
                       {/* Edit/Delete buttons - appear on hover */}
                       {isAdmin && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            onEditDiscussion?.(discussion)
-                          }}
-                          className="absolute top-2 right-12 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 hover:text-blue-200 p-1.5 rounded-lg border border-blue-400/30 hover:border-blue-400/50"
-                          title="Edit discussion"
-                        >
-                          <span className="text-sm">✏️</span>
-                        </button>
-                      )}
-                      
-                      {isAdmin && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            onDeleteDiscussion?.(discussion)
-                          }}
-                          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 p-1.5 rounded-lg border border-red-400/30 hover:border-red-400/50"
-                          title="Delete discussion"
-                        >
-                          <span className="text-sm">🗑️</span>
-                        </button>
+                        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              onEditDiscussion?.(discussion)
+                            }}
+                            className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] p-1.5 rounded transition-colors"
+                            title="Edit discussion"
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              onDeleteDiscussion?.(discussion)
+                            }}
+                            className="text-danger hover:text-danger-hover p-1.5 rounded transition-colors"
+                            title="Delete discussion"
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
                       )}
 
                       {/* Status Indicator */}
-                      <div className={`inline-flex items-center px-2 py-1 rounded-lg text-xs font-bold mb-3 ${
-                        isPast 
-                          ? 'bg-gray-500/20 text-gray-300' 
+                      <div className={`inline-flex items-center px-2 py-1 rounded text-helper-sm font-semibold mb-3 ${
+                        isPast
+                          ? 'bg-[var(--color-bg)] text-[var(--color-text-secondary)]'
                           : isNext
-                          ? 'bg-orange-500/20 text-orange-200'
-                          : 'bg-blue-500/20 text-blue-200'
+                          ? 'bg-primary/10 text-primary'
+                          : 'bg-tertiary/10 text-tertiary'
                       }`}>
-                        <span className="mr-1">
-                          {isPast ? '✅' : isNext ? '⭐' : '📅'}
-                        </span>
                         {isPast ? 'Completed' : isNext ? 'Next Up' : 'Upcoming'}
                       </div>
 
                       {/* Date Badge */}
-                      <div className={`text-sm font-medium mb-2 ${
-                        isPast ? 'text-gray-400' : 'text-blue-200'
+                      <div className={`text-helper font-medium mb-2 ${
+                        isPast ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-secondary)]'
                       }`}>
                         {dateInfo.full}
                       </div>
 
                       {/* Discussion Title */}
-                      <h4 className={`font-bold mb-3 text-sm leading-tight ${
-                        isPast ? 'text-white/50' : 'text-white'
+                      <h4 className={`font-semibold mb-3 text-body leading-tight ${
+                        isPast ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-primary)]'
                       }`}>
                         {discussion.title}
                       </h4>
 
-                      {/* Location - always show something */}
-                      <div className={`flex items-center text-xs mb-3 ${
-                        isPast ? 'text-gray-400' : 'text-blue-300'
+                      {/* Location */}
+                      <div className={`flex items-center text-helper ${
+                        isPast ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-secondary)]'
                       }`}>
-                        <span className="mr-1">📍</span>
+                        <svg className="w-3.5 h-3.5 mr-1 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                        </svg>
                         <span className="truncate">
                           {discussion.location || 'Location TBD'}
                         </span>
@@ -209,11 +217,11 @@ export default function DiscussionsTimeline({
                       {/* Timeline connector dot */}
                       <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
                         <div className={`w-3 h-3 rounded-full border-2 ${
-                          isPast 
-                            ? 'bg-gray-500/50 border-gray-400/50' 
+                          isPast
+                            ? 'bg-[var(--color-text-secondary)] border-[var(--color-divider)]'
                             : isNext
-                            ? 'bg-orange-500 border-orange-400 animate-pulse'
-                            : 'bg-blue-500 border-blue-400'
+                            ? 'bg-primary border-primary animate-pulse'
+                            : 'bg-tertiary border-tertiary'
                         }`}></div>
                       </div>
                     </div>
@@ -223,7 +231,7 @@ export default function DiscussionsTimeline({
             </div>
 
             {/* Timeline base line */}
-            <div className="absolute bottom-0 left-6 right-6 h-0.5 bg-gradient-to-r from-blue-500/30 via-blue-400/50 to-orange-500/30"></div>
+            <div className="absolute bottom-0 left-6 right-6 h-0.5 bg-[var(--color-divider)]"></div>
           </div>
         )}
       </div>
