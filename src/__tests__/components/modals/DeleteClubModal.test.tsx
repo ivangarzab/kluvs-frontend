@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import DeleteClubModal from '../../../components/modals/DeleteClubModal'
+import { mockClub } from '../../utils/mocks'
 
 // Mock supabase
 const mockInvoke = vi.fn()
@@ -21,6 +22,7 @@ describe('DeleteClubModal', () => {
     onClose: vi.fn(),
     clubToDelete,
     selectedServer: 'server-1',
+    selectedClub: mockClub,
     onClubDeleted: vi.fn(),
     onError: vi.fn(),
   }
