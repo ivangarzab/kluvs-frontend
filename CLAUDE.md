@@ -12,7 +12,7 @@ A React + TypeScript web application for managing book clubs. Users can track re
 - **Testing**: Vitest + React Testing Library
 
 ## Backend API Compatibility
-- **Backend Repository**: `bookclub-api`
+- **Backend Repository**: `kluvs-api`
 - **Compatible with migrations up to**: `20251130205915_add_metadata_fields.sql`
 - **Last synced**: 2025-12-07
 - **Sync notes**: Added new optional fields to TypeScript types:

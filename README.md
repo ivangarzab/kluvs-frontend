@@ -1,4 +1,4 @@
-# Kluvs Frontend - Book Club Management App
+# Kluvs: Frontend
 
 [![CI](https://github.com/ivangarzab/kluvs-frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/ivangarzab/kluvs-frontend/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/ivangarzab/kluvs-frontend/branch/main/graph/badge.svg)](https://codecov.io/gh/ivangarzab/kluvs-frontend)
@@ -69,7 +69,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key-here
 
 ### 3. Backend Setup
 
-This frontend requires the [bookclub-api](https://github.com/yourusername/bookclub-api) backend to be deployed as Supabase Edge Functions.
+This frontend requires the [kluvs-api](https://github.com/yourusername/kluvs-api) backend to be deployed as Supabase Edge Functions.
 
 **Backend compatibility:**
 - Compatible with migrations up to: `20251130205915_add_metadata_fields.sql`
@@ -285,7 +285,7 @@ npm run test:run
   - Common tasks and patterns
   - Backend API compatibility
 
-- **[Backend API](https://github.com/yourusername/bookclub-api)** - RESTful Edge Functions
+- **[Backend API](https://github.com/yourusername/kluvs-api)** - RESTful Edge Functions
   - API endpoints documentation
   - Database schema
   - Setup instructions
@@ -311,12 +311,6 @@ Run `npm run validate` to check all of these locally.
 ## 📝 License
 
 [Your License Here]
-
-## 🙋 Support
-
-- **Issues:** [GitHub Issues](https://github.com/yourusername/kluvs-frontend/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/yourusername/kluvs-frontend/discussions)
-- **Backend Repo:** [bookclub-api](https://github.com/yourusername/bookclub-api)
 
 ---
 

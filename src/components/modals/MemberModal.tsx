@@ -175,7 +175,7 @@ export default function MemberModal({
       // Reset form and close modal
       setFormData({ name: '', points: '0', books_read: '0', on_shame_list: false })
       onClose()
-      
+
       // Notify parent component of successful save
       onMemberSaved()
 
@@ -197,32 +197,45 @@ export default function MemberModal({
     onClose()
   }
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !loading) handleClose()
+    }
+    if (isOpen) document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, loading])
+
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-br from-slate-800 via-blue-900 to-slate-800 rounded-2xl border border-blue-300/30 p-6 w-full max-w-md shadow-2xl">
+    <div className="fixed inset-0 bg-[var(--color-overlay)] flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title-member">
+      <div className="bg-[var(--color-bg-raised)] rounded-card border border-[var(--color-divider)] p-6 w-full max-w-md">
         {/* Modal Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 bg-gradient-to-r from-blue-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-lg">👤</span>
+            <div className="h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+              </svg>
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">
+              <h2 id="modal-title-member" className="text-card-heading text-[var(--color-text-primary)]">
                 {isEditing ? 'Edit Member' : 'Add Member'}
               </h2>
-              <p className="text-blue-200/70 text-sm">
+              <p className="text-helper text-[var(--color-text-secondary)]">
                 {isEditing ? 'Update member details' : 'Add a new member to the club'}
               </p>
             </div>
           </div>
           <button
             onClick={handleClose}
-            className="text-white/60 hover:text-white transition-colors p-1"
+            className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors p-1"
             disabled={loading}
+            aria-label="Close"
           >
-            <span className="text-xl">✕</span>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
 
@@ -230,15 +243,15 @@ export default function MemberModal({
         <div className="space-y-4">
           {/* Member Name Field */}
           <div>
-            <label className="block text-white font-medium mb-2">
-              Member Name <span className="text-orange-400">*</span>
+            <label className="block text-[var(--color-text-primary)] font-medium mb-2">
+              Member Name <span className="text-primary">*</span>
             </label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="e.g., BookLover42"
-              className="w-full bg-white/10 backdrop-blur-md border border-blue-300/30 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all duration-200"
+              className="w-full bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-input px-4 py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               disabled={loading}
               maxLength={100}
             />
@@ -246,7 +259,7 @@ export default function MemberModal({
 
           {/* Points Field */}
           <div>
-            <label className="block text-white font-medium mb-2">
+            <label className="block text-[var(--color-text-primary)] font-medium mb-2">
               Points
             </label>
             <input
@@ -255,17 +268,17 @@ export default function MemberModal({
               onChange={(e) => setFormData(prev => ({ ...prev, points: e.target.value }))}
               placeholder="0"
               min="0"
-              className="w-full bg-white/10 backdrop-blur-md border border-blue-300/30 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+              className="w-full bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-input px-4 py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               disabled={loading}
             />
-            <p className="text-blue-200/60 text-xs mt-1">
-              🏆 Member's current point total
+            <p className="text-[var(--color-text-secondary)] text-xs mt-1">
+              Member's current point total
             </p>
           </div>
 
           {/* Books Read Field */}
           <div>
-            <label className="block text-white font-medium mb-2">
+            <label className="block text-[var(--color-text-primary)] font-medium mb-2">
               Books Read
             </label>
             <input
@@ -274,43 +287,40 @@ export default function MemberModal({
               onChange={(e) => setFormData(prev => ({ ...prev, books_read: e.target.value }))}
               placeholder="0"
               min="0"
-              className="w-full bg-white/10 backdrop-blur-md border border-blue-300/30 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+              className="w-full bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-input px-4 py-3 text-[var(--color-text-primary)] placeholder-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
               disabled={loading}
             />
-            <p className="text-blue-200/60 text-xs mt-1">
-              📚 Number of books completed
+            <p className="text-[var(--color-text-secondary)] text-xs mt-1">
+              Number of books completed
             </p>
           </div>
 
           {/* Shame List Toggle - Material 3 Style */}
           <div>
-            <label className="block text-white font-medium mb-3">
+            <label className="block text-[var(--color-text-primary)] font-medium mb-3">
               Shame List Status
             </label>
-            <div className="flex items-center justify-between bg-white/10 backdrop-blur-md border border-blue-300/30 rounded-xl p-4">
+            <div className="flex items-center justify-between bg-[var(--color-bg-elevated)] border border-[var(--color-divider)] rounded-input p-4">
               <div className="flex items-center space-x-3">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 ${
-                  formData.on_shame_list 
-                    ? 'bg-red-500 text-white' 
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
+                  formData.on_shame_list
+                    ? 'bg-red-500 text-white'
                     : 'bg-green-500 text-white'
                 }`}>
-                  <span className="text-sm">
-                    {formData.on_shame_list ? '😰' : '✨'}
-                  </span>
                 </div>
                 <div>
-                  <p className="text-white font-medium">
+                  <p className="text-[var(--color-text-primary)] font-medium">
                     {formData.on_shame_list ? 'On Shame List' : 'Good Standing'}
                   </p>
-                  <p className="text-blue-200/60 text-xs">
-                    {formData.on_shame_list 
-                      ? 'Member has fallen behind on reading' 
+                  <p className="text-[var(--color-text-secondary)] text-xs">
+                    {formData.on_shame_list
+                      ? 'Member has fallen behind on reading'
                       : 'Member is up to date with reading'
                     }
                   </p>
                 </div>
               </div>
-              
+
               {/* Material 3 Switch */}
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -320,17 +330,14 @@ export default function MemberModal({
                   className="sr-only peer"
                   disabled={loading}
                 />
-                <div className={`relative w-14 h-8 rounded-full transition-all duration-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-400/20 ${
-                  formData.on_shame_list 
-                    ? 'bg-red-500' 
-                    : 'bg-white/20'
+                <div className={`relative w-14 h-8 rounded-full transition-colors peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 ${
+                  formData.on_shame_list
+                    ? 'bg-red-500'
+                    : 'bg-[var(--color-divider)]'
                 } peer-checked:bg-red-500`}>
-                  <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-lg transition-all duration-300 flex items-center justify-center ${
+                  <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-lg transition-colors flex items-center justify-center ${
                     formData.on_shame_list ? 'translate-x-6' : 'translate-x-0'
                   }`}>
-                    <span className="text-xs">
-                      {formData.on_shame_list ? '😰' : '✨'}
-                    </span>
                   </div>
                 </div>
               </label>
@@ -338,30 +345,30 @@ export default function MemberModal({
           </div>
 
           {/* Club Context */}
-          <div className="bg-blue-500/10 border border-blue-400/20 rounded-xl p-3">
-            <p className="text-blue-200 text-sm font-medium">
-              📚 Club: <span className="text-white">{selectedClub.name}</span>
+          <div className="bg-[var(--color-bg-elevated)] border border-[var(--color-divider)] rounded-input p-3">
+            <p className="text-[var(--color-text-secondary)] text-sm font-medium">
+              Club: <span className="text-[var(--color-text-primary)]">{selectedClub.name}</span>
             </p>
-            <p className="text-blue-200/60 text-xs mt-1">
+            <p className="text-[var(--color-text-secondary)] text-xs mt-1">
               {isEditing ? 'Updating member in' : 'Adding member to'} this club
             </p>
           </div>
         </div>
 
         {/* Modal Footer */}
-        <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10">
+        <div className="flex items-center justify-between mt-6 pt-4 border-t border-[var(--color-divider)]">
           <button
             onClick={handleClose}
-            className="text-white/60 hover:text-white transition-colors font-medium"
+            className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors font-medium"
             disabled={loading}
           >
             Cancel
           </button>
-          
+
           <button
             onClick={handleSubmit}
             disabled={loading || !formData.name.trim()}
-            className="bg-gradient-to-r from-blue-500 to-orange-500 hover:from-blue-600 hover:to-orange-600 disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-xl font-bold transition-all duration-200 hover:scale-105 shadow-lg disabled:hover:scale-100 flex items-center space-x-2"
+            className="bg-primary hover:bg-primary-hover disabled:bg-gray-400 dark:disabled:bg-gray-700 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-btn font-medium transition-colors flex items-center space-x-2"
           >
             {loading ? (
               <>
