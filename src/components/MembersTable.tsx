@@ -8,31 +8,34 @@ interface MembersTableProps {
   onDeleteMember: (member: Member) => void
 }
 
-export default function MembersTable({ 
-  selectedClub, 
+export default function MembersTable({
+  selectedClub,
   isAdmin,
-  onAddMember, 
-  onEditMember, 
-  onDeleteMember 
+  onAddMember,
+  onEditMember,
+  onDeleteMember
 }: MembersTableProps) {
   return (
-    <div className="bg-white/8 backdrop-blur-md rounded-2xl border border-blue-300/20 overflow-hidden shadow-2xl">
-      <div className="p-6 border-b border-blue-300/20 bg-gradient-to-r from-blue-600/10 to-orange-600/10">
+    <div className="bg-[var(--color-bg-raised)] rounded-card border border-[var(--color-divider)] overflow-hidden">
+      {/* Header */}
+      <div className="p-6 border-b border-[var(--color-divider)]">
         <div className="flex justify-between items-center">
           <div>
-            <h3 className="font-bold text-white flex items-center text-xl">
-              <span className="mr-3 text-2xl">👥</span>
+            <h3 className="text-section-heading text-[var(--color-text-primary)] flex items-center">
+              <svg className="w-5 h-5 text-primary mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128H5.228A2 2 0 013 17.208V5.618a2 2 0 01.932-1.695l4.146-2.59A2 2 0 019.265 1h5.47a2 2 0 011.187.333l4.146 2.59A2 2 0 0121 5.618v1.757M15 19.128l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
               Club Members ({selectedClub.members.length})
             </h3>
-            <p className="text-blue-200/70 text-sm mt-1">Reading community overview</p>
+            <p className="text-helper text-[var(--color-text-secondary)] mt-1">Reading community overview</p>
           </div>
-          
-          {/* Add Member Button - Following DiscussionsTimeline pattern */}
+
+          {/* Add Member Button */}
           {isAdmin && (
             <div className="hidden md:flex">
-              <button 
+              <button
                 onClick={onAddMember}
-                className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-blue-400/30"
+                className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-btn text-sm font-medium transition-colors"
               >
                 Add Member
               </button>
@@ -40,96 +43,80 @@ export default function MembersTable({
           )}
         </div>
       </div>
-      
+
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-blue-300/20 bg-blue-500/5">
-              <th className="text-left py-4 px-6 text-blue-200 font-bold">Reader</th>
-              <th className="text-center py-4 px-6 text-blue-200 font-bold">Points</th>
-              <th className="text-center py-4 px-6 text-blue-200 font-bold">Books Read</th>
-              <th className="text-left py-4 px-6 text-blue-200 font-bold">Status</th>
+            <tr className="border-b border-[var(--color-divider)] bg-[var(--color-bg-elevated)]">
+              <th className="text-left py-3 px-6 text-helper text-[var(--color-text-secondary)] font-semibold uppercase tracking-wider">Reader</th>
+              <th className="text-center py-3 px-6 text-helper text-[var(--color-text-secondary)] font-semibold uppercase tracking-wider">Points</th>
+              <th className="text-center py-3 px-6 text-helper text-[var(--color-text-secondary)] font-semibold uppercase tracking-wider">Books Read</th>
+              <th className="text-left py-3 px-6 text-helper text-[var(--color-text-secondary)] font-semibold uppercase tracking-wider">Status</th>
             </tr>
           </thead>
           <tbody>
             {selectedClub.members.map(member => (
-              <tr key={member.id} className="border-b border-white/5 hover:bg-white/5 transition-all duration-200 group">
+              <tr key={member.id} className="border-b border-[var(--color-divider)] last:border-b-0 hover:bg-[var(--color-bg-elevated)] transition-colors group">
                 <td className="py-4 px-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <div className="h-10 w-10 bg-gradient-to-r from-blue-500 to-orange-500 rounded-full flex items-center justify-center mr-3 shadow-lg group-hover:scale-110 transition-transform duration-200">
-                        {/* Discord SVG */}
-                        <img 
-                          src="/ic-discord.svg" 
-                          alt="Discord" 
-                          className="w-5 h-5 text-white"
-                          onError={(e) => {
-                            // Fallback to emoji if SVG not found
-                            const target = e.currentTarget as HTMLImageElement;
-                            target.style.display = 'none';
-                            const fallback = target.parentElement?.querySelector('.fallback-emoji') as HTMLElement;
-                            if (fallback) {
-                              fallback.style.display = 'inline';
-                            }
-                          }}
-                        />
-                        <span className="fallback-emoji text-white text-sm font-bold" style={{ display: 'none' }}>
-                          🎮
+                      <div className="h-9 w-9 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-primary font-semibold text-sm">
+                          {member.name.charAt(0).toUpperCase()}
                         </span>
                       </div>
-                      <span className="text-white font-semibold">{member.name}</span>
+                      <span className="text-[var(--color-text-primary)] font-medium">{member.name}</span>
                     </div>
 
-                    {/* Edit/Delete buttons - appear on hover, hidden on mobile */}
+                    {/* Edit/Delete buttons - appear on hover */}
                     {isAdmin && (
-                      <div className="hidden md:flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <div className="hidden md:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
                             onEditMember(member)
                           }}
-                          className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 hover:text-blue-200 p-1.5 rounded-lg border border-blue-400/30 hover:border-blue-400/50"
+                          className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] p-1.5 rounded transition-colors"
                           title="Edit member"
+                          aria-label={`Edit ${member.name}`}
                         >
-                          <span className="text-sm">✏️</span>
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+                          </svg>
                         </button>
-                        
+
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
                             onDeleteMember(member)
                           }}
-                          className="bg-red-500/20 hover:bg-red-500/30 text-red-300 hover:text-red-200 p-1.5 rounded-lg border border-red-400/30 hover:border-red-400/50"
+                          className="text-danger hover:text-danger-hover p-1.5 rounded transition-colors"
                           title="Delete member"
+                          aria-label={`Delete ${member.name}`}
                         >
-                          <span className="text-sm">🗑️</span>
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
                         </button>
                       </div>
                     )}
                   </div>
                 </td>
                 <td className="py-4 px-6 text-center">
-                  <div className="flex items-center justify-center">
-                    <span className="bg-blue-500/20 text-blue-200 px-3 py-1.5 rounded-full text-sm font-bold border border-blue-400/30">
-                      {member.points} pts
-                    </span>
-                  </div>
+                  <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-body font-semibold">
+                    {member.points} pts
+                  </span>
                 </td>
                 <td className="py-4 px-6 text-center">
-                  <div className="flex items-center justify-center">
-                    <span className="text-white/90 font-medium mr-2">{member.books_read}</span>
-                    <span className="text-orange-300">📚</span>
-                  </div>
+                  <span className="text-[var(--color-text-primary)] font-medium">{member.books_read}</span>
                 </td>
                 <td className="py-4 px-6">
                   {selectedClub.shame_list.includes(member.id) ? (
-                    <span className="bg-red-500/20 text-red-300 px-3 py-1.5 rounded-full text-xs font-bold border border-red-400/30 flex items-center w-fit">
-                      <span className="mr-1">😰</span>
+                    <span className="bg-danger/10 text-danger px-3 py-1 rounded-full text-helper-sm font-semibold inline-flex items-center w-fit">
                       Shame List
                     </span>
                   ) : (
-                    <span className="bg-green-500/20 text-green-300 px-3 py-1.5 rounded-full text-xs font-bold border border-green-400/30 flex items-center w-fit">
-                      <span className="mr-1">✨</span>
+                    <span className="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-helper-sm font-semibold inline-flex items-center w-fit">
                       Good Standing
                     </span>
                   )}

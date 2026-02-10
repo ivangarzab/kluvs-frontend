@@ -84,10 +84,10 @@ describe('AddClubModal', () => {
       expect(screen.getByRole('button', { name: /Create Club/i })).toBeInTheDocument()
     })
 
-    it('should show close button (✕)', () => {
+    it('should show close button', () => {
       render(<AddClubModal {...defaultProps} />)
 
-      const closeButton = screen.getByText('✕').closest('button')
+      const closeButton = screen.getByRole('button', { name: 'Close' })
       expect(closeButton).toBeInTheDocument()
     })
   })
@@ -380,11 +380,11 @@ describe('AddClubModal', () => {
       expect(mockOnClose).toHaveBeenCalled()
     })
 
-    it('should call onClose when close button (✕) is clicked', async () => {
+    it('should call onClose when close button is clicked', async () => {
       const user = userEvent.setup()
       render(<AddClubModal {...defaultProps} />)
 
-      const closeButton = screen.getByText('✕').closest('button')!
+      const closeButton = screen.getByRole('button', { name: 'Close' })
       await user.click(closeButton)
 
       expect(mockOnClose).toHaveBeenCalled()
@@ -397,7 +397,7 @@ describe('AddClubModal', () => {
       const nameInput = screen.getByPlaceholderText('e.g., Fantasy Book Club')
       await user.type(nameInput, 'My Book Club')
 
-      const closeButton = screen.getByText('✕').closest('button')!
+      const closeButton = screen.getByRole('button', { name: 'Close' })
       await user.click(closeButton)
 
       // Re-open modal
@@ -413,7 +413,7 @@ describe('AddClubModal', () => {
       const user = userEvent.setup()
       render(<AddClubModal {...defaultProps} />)
 
-      const closeButton = screen.getByText('✕').closest('button')!
+      const closeButton = screen.getByRole('button', { name: 'Close' })
       await user.click(closeButton)
 
       expect(mockOnError).toHaveBeenCalledWith('')
@@ -436,7 +436,7 @@ describe('AddClubModal', () => {
 
       // Close buttons should be disabled
       const cancelButton = screen.getByRole('button', { name: /Cancel/i })
-      const closeButton = screen.getByText('✕').closest('button')!
+      const closeButton = screen.getByRole('button', { name: 'Close' })
 
       expect(cancelButton).toBeDisabled()
       expect(closeButton).toBeDisabled()

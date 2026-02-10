@@ -1,8 +1,9 @@
 import { render, type RenderOptions } from '@testing-library/react'
 import { type ReactElement, type ReactNode } from 'react'
 import { AuthProvider } from '../../contexts/AuthContext'
+import { ThemeProvider } from '../../contexts/ThemeContext'
 
-// Custom render function that includes AuthProvider
+// Custom render function that includes AuthProvider and ThemeProvider
 interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   withAuth?: boolean
 }
@@ -15,9 +16,13 @@ export function renderWithAuth(
 
   const Wrapper = ({ children }: { children: ReactNode }) => {
     if (withAuth) {
-      return <AuthProvider>{children}</AuthProvider>
+      return (
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
+      )
     }
-    return <>{children}</>
+    return <ThemeProvider>{children}</ThemeProvider>
   }
 
   return render(ui, { wrapper: Wrapper, ...renderOptions })
