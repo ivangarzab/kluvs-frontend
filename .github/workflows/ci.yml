@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   test:
@@ -24,11 +24,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run linter
-        run: npm run lint
-
-      - name: Run type check
-        run: npm run type-check
+      - name: Run validation
+        # Uses your existing script to run lint, type-check, and tests in one go
+        run: npm run validate 
 
       - name: Run tests with coverage
         run: npm run test:coverage
@@ -38,7 +36,8 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/lcov.info
-          flags: unittests
+          # Dynamically sets the flag based on the branch name
+          flags: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
           name: codecov-umbrella
           fail_ci_if_error: true
           verbose: true
@@ -47,6 +46,8 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: test
+    # Only run the build job for the main and develop branches, not for general PRs
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
 
     steps:
       - name: Checkout code
@@ -67,6 +68,7 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          # Differentiates the artifact name based on the branch
+          name: dist-${{ github.ref_name }}
           path: dist/
           retention-days: 7
