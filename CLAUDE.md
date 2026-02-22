@@ -35,7 +35,8 @@ src/
 │   └── MembersTable.tsx
 ├── content/
 │   ├── privacy-policy.md   # Privacy policy content (edit this to update the policy)
-│   └── terms-of-use.md     # Terms of use content (edit this to update the terms)
+│   ├── terms-of-use.md     # Terms of use content (edit this to update the terms)
+│   └── data-deletion.md    # Account/data deletion content (edit this to update the page)
 ├── contexts/
 │   └── AuthContext.tsx      # Authentication state management
 ├── pages/
@@ -43,7 +44,8 @@ src/
 │   ├── ClubsDashboard.tsx   # Authenticated dashboard view (/app)
 │   ├── LoginPage.tsx        # OAuth login page (/app when logged out)
 │   ├── PrivacyPolicy.tsx    # Public /privacy route (shell only — content lives in content/)
-│   └── TermsOfUse.tsx       # Public /terms route (shell only — content lives in content/)
+│   ├── TermsOfUse.tsx       # Public /terms route (shell only — content lives in content/)
+│   └── DataDeletion.tsx     # Public /delete-account route — required by Google Play Console
 ├── types/
 │   └── index.ts             # TypeScript type definitions
 ├── App.tsx                  # Root component — router config only
@@ -147,6 +149,7 @@ The app uses React Router v7 (`BrowserRouter`) in `App.tsx`.
 - `/` — Public, no auth required → `src/pages/LandingPage.tsx`
 - `/privacy` — Public, no auth required → `src/pages/PrivacyPolicy.tsx`
 - `/terms` — Public, no auth required → `src/pages/TermsOfUse.tsx`
+- `/delete-account` — Public, no auth required → `src/pages/DataDeletion.tsx` (Google Play Console requirement)
 - `/app/*` — Authenticated → `AuthProvider > AppContent` (login or dashboard)
 
 **Key rule:** `AuthProvider` is scoped only to `/app/*`. Public pages never trigger Supabase auth calls. OAuth `redirectTo` is set to `${window.location.origin}/app`.
@@ -164,8 +167,9 @@ The app uses React Router v7 (`BrowserRouter`) in `App.tsx`.
 ## Updating Legal Pages
 - **Privacy Policy**: edit `src/content/privacy-policy.md` — renders at `/privacy`
 - **Terms of Use**: edit `src/content/terms-of-use.md` — renders at `/terms`
+- **Data Deletion**: edit `src/content/data-deletion.md` — renders at `/delete-account`
 
-Both are plain Markdown. No code changes needed.
+All are plain Markdown. No code changes needed.
 
 ## Git Branches
 - `main` - Production branch

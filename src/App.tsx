@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage'
 import LandingPage from './pages/LandingPage'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfUse from './pages/TermsOfUse'
+import DataDeletion from './pages/DataDeletion'
 
 function AppContent() {
   const { user, loading } = useAuth()
@@ -37,6 +38,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfUse />} />
+          <Route path="/delete-account" element={<DataDeletion />} />
           <Route
             path="/app/*"
             element={
