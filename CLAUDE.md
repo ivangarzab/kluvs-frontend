@@ -39,13 +39,13 @@ src/
 ├── contexts/
 │   └── AuthContext.tsx      # Authentication state management
 ├── pages/
-│   ├── PrivacyPolicy.tsx   # Public /privacy route (shell only — content lives in content/)
-│   └── TermsOfUse.tsx      # Public /terms route (shell only — content lives in content/)
+│   ├── ClubsDashboard.tsx   # Authenticated dashboard view (/app)
+│   ├── LoginPage.tsx        # OAuth login page (/app when logged out)
+│   ├── PrivacyPolicy.tsx    # Public /privacy route (shell only — content lives in content/)
+│   └── TermsOfUse.tsx       # Public /terms route (shell only — content lives in content/)
 ├── types/
 │   └── index.ts             # TypeScript type definitions
-├── App.tsx                  # Root component with routing + auth
-├── ClubsDashboard.tsx       # Main dashboard view
-├── LoginPage.tsx            # OAuth login page
+├── App.tsx                  # Root component — router config only
 └── supabase.ts              # Supabase client configuration
 ```
 
