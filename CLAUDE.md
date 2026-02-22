@@ -39,6 +39,7 @@ src/
 ├── contexts/
 │   └── AuthContext.tsx      # Authentication state management
 ├── pages/
+│   ├── LandingPage.tsx      # Public / route — marketing, download links, contact form
 │   ├── ClubsDashboard.tsx   # Authenticated dashboard view (/app)
 │   ├── LoginPage.tsx        # OAuth login page (/app when logged out)
 │   ├── PrivacyPolicy.tsx    # Public /privacy route (shell only — content lives in content/)
@@ -143,11 +144,12 @@ VITE_SUPABASE_ANON_KEY=your_anon_key
 The app uses React Router v7 (`BrowserRouter`) in `App.tsx`.
 
 ### Route Structure
+- `/` — Public, no auth required → `src/pages/LandingPage.tsx`
 - `/privacy` — Public, no auth required → `src/pages/PrivacyPolicy.tsx`
 - `/terms` — Public, no auth required → `src/pages/TermsOfUse.tsx`
-- `/*` — All other routes → `AuthProvider > AppContent` (login or dashboard)
+- `/app/*` — Authenticated → `AuthProvider > AppContent` (login or dashboard)
 
-**Key rule:** `AuthProvider` is scoped only to `/*`. Public pages like `/privacy` never trigger Supabase auth calls.
+**Key rule:** `AuthProvider` is scoped only to `/app/*`. Public pages never trigger Supabase auth calls. OAuth `redirectTo` is set to `${window.location.origin}/app`.
 
 ### Adding a New Public Page
 1. Create the component in `src/pages/`
@@ -156,7 +158,7 @@ The app uses React Router v7 (`BrowserRouter`) in `App.tsx`.
 
 ### Adding a New Authenticated Page
 1. Create the component in `src/pages/`
-2. It will automatically be served under the `/*` route (inside AuthProvider)
+2. It will automatically be served under the `/app/*` route (inside AuthProvider)
 3. Wrap tests in `renderWithAuth()` from `src/__tests__/utils/test-utils.tsx`
 
 ## Updating Legal Pages
