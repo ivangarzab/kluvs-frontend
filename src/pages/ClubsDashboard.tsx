@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react'
-import { supabase } from './supabase'
-import type { Club, Server, Discussion, Member } from "./types"
-import AddClubModal from './components/modals/AddClubModal'
-import EditBookModal from './components/modals/EditBookModal'
-import NewSessionModal from './components/modals/NewSessionModal'
-import DiscussionModal from './components/modals/DiscussionModal'
-import MemberModal from './components/modals/MemberModal'
-import DeleteMemberModal from './components/modals/DeleteMemberModal'
-import DeleteDiscussionModal from './components/modals/DeleteDiscussionModal'
-import DeleteClubModal from './components/modals/DeleteClubModal'
-import TopNavbar from './components/layout/TopNavbar'
-import Sidebar from './components/layout/Sidebar'
-import CurrentReadingCard from './components/CurrentReadingCard'
-import DiscussionsTimeline from './components/DiscussionsTimeline'
-import MembersTable from './components/MembersTable'
-import { useAuth } from './contexts/AuthContext'
+import { supabase } from '../supabase'
+import type { Club, Server, Discussion, Member } from "../types"
+import AddClubModal from '../components/modals/AddClubModal'
+import EditBookModal from '../components/modals/EditBookModal'
+import NewSessionModal from '../components/modals/NewSessionModal'
+import DiscussionModal from '../components/modals/DiscussionModal'
+import MemberModal from '../components/modals/MemberModal'
+import DeleteMemberModal from '../components/modals/DeleteMemberModal'
+import DeleteDiscussionModal from '../components/modals/DeleteDiscussionModal'
+import DeleteClubModal from '../components/modals/DeleteClubModal'
+import TopNavbar from '../components/layout/TopNavbar'
+import Sidebar from '../components/layout/Sidebar'
+import CurrentReadingCard from '../components/CurrentReadingCard'
+import DiscussionsTimeline from '../components/DiscussionsTimeline'
+import MembersTable from '../components/MembersTable'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function ClubsDashboard() {
   const [servers, setServers] = useState<Server[]>([])
@@ -23,25 +23,25 @@ export default function ClubsDashboard() {
   const [loading, setLoading] = useState(true)
   const [clubLoading, setClubLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const { isAdmin } = useAuth() 
-  
+  const { isAdmin } = useAuth()
+
   // Add Club Modal State
   const [showAddClubModal, setShowAddClubModal] = useState(false)
-  
+
   // Edit Book Modal State
   const [showEditBookModal, setShowEditBookModal] = useState(false)
-  
+
   // New Session Modal State
   const [showNewSessionModal, setShowNewSessionModal] = useState(false)
-  
+
   // Discussion Modal State
   const [showAddDiscussionModal, setShowAddDiscussionModal] = useState(false)
   const [editingDiscussion, setEditingDiscussion] = useState<Discussion | null>(null)
-  
+
   // Delete Discussion Modal State
   const [showDeleteDiscussionModal, setShowDeleteDiscussionModal] = useState(false)
   const [discussionToDelete, setDiscussionToDelete] = useState<Discussion | null>(null)
-  
+
   // Delete Club Modal State
   const [showDeleteClubModal, setShowDeleteClubModal] = useState(false)
   const [clubToDelete, setClubToDelete] = useState<{ id: string; name: string } | null>(null)
@@ -110,40 +110,40 @@ export default function ClubsDashboard() {
     try {
       console.log('🏢 [CLUB-FETCH] Starting fetchClubDetails for clubId:', clubId)
       console.log('🏢 [CLUB-FETCH] Selected server:', selectedServer)
-      
+
       setClubLoading(true) // Start loading
       setError(null)
-      
+
       // Build URL with query parameters since Edge Function expects GET with query params
       const functionName = `club?id=${encodeURIComponent(clubId)}&server_id=${encodeURIComponent(selectedServer)}`
       console.log('🏢 [CLUB-FETCH] Calling Edge Function with URL:', functionName)
-      
+
       const { data, error } = await supabase.functions.invoke(functionName, {
         method: 'GET'
       })
-  
-      console.log('🏢 [CLUB-FETCH] Edge Function response:', { 
-        success: !error, 
+
+      console.log('🏢 [CLUB-FETCH] Edge Function response:', {
+        success: !error,
         error: error?.message || null,
         hasData: !!data,
         dataKeys: data ? Object.keys(data) : null
       })
-  
+
       if (error) {
         console.error('🏢 [CLUB-FETCH] Edge Function error:', error)
         throw error
       }
-      
+
       console.log('🏢 [CLUB-FETCH] Setting selected club:', {
         clubId: data?.id,
         clubName: data?.name,
         hasActiveSession: !!data?.active_session,
         membersCount: data?.members?.length || 0
       })
-      
+
       setSelectedClub(data)
       console.log('🏢 [CLUB-FETCH] Successfully completed fetchClubDetails')
-      
+
     } catch (err: unknown) {
       console.error('🏢 [CLUB-FETCH] ERROR in fetchClubDetails:', err)
       console.error('🏢 [CLUB-FETCH] Error details:', {
@@ -151,7 +151,7 @@ export default function ClubsDashboard() {
         clubId,
         selectedServer
       })
-      
+
       setError(
         err && typeof err === 'object' && 'message' in err
           ? String(err.message)
@@ -325,7 +325,7 @@ export default function ClubsDashboard() {
       </div>
 
       {/* All Modals - Clean and Organized! */}
-      
+
       {/* Add Club Modal */}
       <AddClubModal
         isOpen={showAddClubModal}

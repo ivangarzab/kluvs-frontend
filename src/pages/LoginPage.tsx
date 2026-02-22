@@ -1,6 +1,6 @@
-// src/LoginPage.tsx
 import { useState } from 'react'
-import { useAuth } from './contexts/AuthContext'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function LoginPage() {
   const { loading, signInWithDiscord, signInWithGoogle } = useAuth()
@@ -93,9 +93,24 @@ export default function LoginPage() {
         </div>
 
         {/* Footer info */}
-        <div className="mt-8 pt-6 border-t border-[var(--color-divider)]">
+        <div className="mt-8 pt-6 border-t border-[var(--color-divider)] space-y-2">
           <p className="text-center text-[var(--color-text-secondary)] text-helper">
             Secure authentication powered by Supabase
+          </p>
+          <p className="text-center text-helper space-x-3">
+            <Link
+              to="/privacy"
+              className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] underline underline-offset-2 transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <span className="text-[var(--color-divider)]">·</span>
+            <Link
+              to="/terms"
+              className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] underline underline-offset-2 transition-colors"
+            >
+              Terms of Use
+            </Link>
           </p>
         </div>
       </div>
