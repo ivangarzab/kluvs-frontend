@@ -6,7 +6,9 @@ A React + TypeScript web application for managing book clubs. Users can track re
 ## Tech Stack
 - **Framework**: React 18 with TypeScript
 - **Build Tool**: Vite
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS + `@tailwindcss/typography` (for prose/markdown rendering)
+- **Routing**: React Router v7 (`react-router-dom`)
+- **Markdown Rendering**: `react-markdown`
 - **Backend**: Supabase (Auth + Edge Functions)
 - **Authentication**: OAuth via Discord and Google
 - **Testing**: Vitest + React Testing Library
@@ -31,11 +33,15 @@ src/
 │   ├── CurrentReadingCard.tsx
 │   ├── DiscussionsTimeline.tsx
 │   └── MembersTable.tsx
+├── content/
+│   └── privacy-policy.md   # Privacy policy content (edit this to update the policy)
 ├── contexts/
 │   └── AuthContext.tsx      # Authentication state management
+├── pages/
+│   └── PrivacyPolicy.tsx   # Public /privacy route (shell only — content lives in content/)
 ├── types/
 │   └── index.ts             # TypeScript type definitions
-├── App.tsx                  # Root component with auth routing
+├── App.tsx                  # Root component with routing + auth
 ├── ClubsDashboard.tsx       # Main dashboard view
 ├── LoginPage.tsx            # OAuth login page
 └── supabase.ts              # Supabase client configuration
@@ -130,16 +136,32 @@ VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_anon_key
 ```
 
+## Routing Architecture
+
+The app uses React Router v7 (`BrowserRouter`) in `App.tsx`.
+
+### Route Structure
+- `/privacy` — Public, no auth required → `src/pages/PrivacyPolicy.tsx`
+- `/*` — All other routes → `AuthProvider > AppContent` (login or dashboard)
+
+**Key rule:** `AuthProvider` is scoped only to `/*`. Public pages like `/privacy` never trigger Supabase auth calls.
+
+### Adding a New Public Page
+1. Create the component in `src/pages/`
+2. Add a `<Route path="/your-path" element={<YourPage />} />` **above** the `/*` route in `App.tsx`
+3. Wrap tests in `<MemoryRouter>` (no AuthProvider needed)
+
+### Adding a New Authenticated Page
+1. Create the component in `src/pages/`
+2. It will automatically be served under the `/*` route (inside AuthProvider)
+3. Wrap tests in `renderWithAuth()` from `src/__tests__/utils/test-utils.tsx`
+
+## Updating the Privacy Policy
+Edit `src/content/privacy-policy.md` directly — it's plain Markdown. No code changes needed. The page at `/privacy` renders it automatically.
+
 ## Git Branches
 - `main` - Production branch
-- `feature/login-page` - Authentication implementation (current branch)
-
-## Recent Changes (feature/login-page branch)
-- Implemented complete OAuth authentication system
-- Added user profile management
-- Replaced dev-mode checks with role-based access control
-- Fixed sign out infinite spinner bug
-- Added session persistence configuration
+- `develop` - Active development branch
 
 ## Testing
 
@@ -179,8 +201,9 @@ src/__tests__/
 2. Import mocks: `import { mockAdminMember, mockClub } from '../__tests__/utils/mocks'`
 3. Mock Supabase client if needed (see AuthContext.test.tsx for examples)
 4. Use `renderWithAuth()` for components that need AuthContext
-5. Test user interactions with `@testing-library/user-event`
-6. Use `waitFor()` for async state updates
+5. Use `<MemoryRouter>` for components that use `Link` or other router primitives but don't need auth
+6. Test user interactions with `@testing-library/user-event`
+7. Use `waitFor()` for async state updates
 
 ### Test Coverage
 Current coverage (as of 2025-12-07):
