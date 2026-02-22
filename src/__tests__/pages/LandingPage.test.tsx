@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { ThemeProvider } from '../../contexts/ThemeContext'
 import LandingPage from '../../pages/LandingPage'
@@ -72,6 +73,10 @@ describe('LandingPage', () => {
   })
 
   describe('Contact Form', () => {
+    beforeEach(() => {
+      vi.stubGlobal('location', { href: '' })
+    })
+
     it('should render the Name input field', () => {
       renderLandingPage()
       expect(screen.getByLabelText(/name/i)).toBeInTheDocument()
@@ -90,6 +95,44 @@ describe('LandingPage', () => {
     it('should render the Send Message submit button', () => {
       renderLandingPage()
       expect(screen.getByRole('button', { name: /send message/i })).toBeInTheDocument()
+    })
+
+    it('should update fields when user types', async () => {
+      const user = userEvent.setup()
+      renderLandingPage()
+
+      await user.type(screen.getByLabelText(/name/i), 'Jane')
+      await user.type(screen.getByLabelText(/email/i), 'jane@example.com')
+      await user.type(screen.getByLabelText(/message/i), 'Hello!')
+
+      expect(screen.getByLabelText(/name/i)).toHaveValue('Jane')
+      expect(screen.getByLabelText(/email/i)).toHaveValue('jane@example.com')
+      expect(screen.getByLabelText(/message/i)).toHaveValue('Hello!')
+    })
+
+    it('should show success message after form submission', async () => {
+      const user = userEvent.setup()
+      renderLandingPage()
+
+      await user.type(screen.getByLabelText(/name/i), 'Jane')
+      await user.type(screen.getByLabelText(/email/i), 'jane@example.com')
+      await user.type(screen.getByLabelText(/message/i), 'Hello!')
+      await user.click(screen.getByRole('button', { name: /send message/i }))
+
+      expect(screen.getByText(/thanks for reaching out/i)).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /send message/i })).not.toBeInTheDocument()
+    })
+
+    it('should set mailto href on submission', async () => {
+      const user = userEvent.setup()
+      renderLandingPage()
+
+      await user.type(screen.getByLabelText(/name/i), 'Jane')
+      await user.type(screen.getByLabelText(/email/i), 'jane@example.com')
+      await user.type(screen.getByLabelText(/message/i), 'Hello!')
+      await user.click(screen.getByRole('button', { name: /send message/i }))
+
+      expect(window.location.href).toContain('mailto:kluvs.app@gmail.com')
     })
   })
 
