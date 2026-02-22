@@ -1,7 +1,6 @@
-// src/LoginPage.tsx
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from './contexts/AuthContext'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function LoginPage() {
   const { loading, signInWithDiscord, signInWithGoogle } = useAuth()

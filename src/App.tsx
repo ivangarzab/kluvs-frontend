@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
-import ClubsDashboard from './ClubsDashboard'
-import LoginPage from './LoginPage'
+import ClubsDashboard from './pages/ClubsDashboard'
+import LoginPage from './pages/LoginPage'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfUse from './pages/TermsOfUse'
 
