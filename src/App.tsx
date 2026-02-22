@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import ClubsDashboard from './pages/ClubsDashboard'
 import LoginPage from './pages/LoginPage'
+import LandingPage from './pages/LandingPage'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfUse from './pages/TermsOfUse'
 
@@ -33,6 +34,7 @@ function App() {
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfUse />} />
           <Route
