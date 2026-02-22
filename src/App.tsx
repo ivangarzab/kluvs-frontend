@@ -36,7 +36,7 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfUse />} />
           <Route
-            path="/*"
+            path="/app/*"
             element={
               <AuthProvider>
                 <AppContent />

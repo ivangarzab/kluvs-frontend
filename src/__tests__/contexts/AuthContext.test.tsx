@@ -299,7 +299,7 @@ describe('AuthContext', () => {
       expect(mockSupabase.auth.signInWithOAuth).toHaveBeenCalledWith({
         provider: 'discord',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: window.location.origin + '/app',
         },
       })
     })
@@ -337,7 +337,7 @@ describe('AuthContext', () => {
       expect(mockSupabase.auth.signInWithOAuth).toHaveBeenCalledWith({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: window.location.origin + '/app',
         },
       })
     })
