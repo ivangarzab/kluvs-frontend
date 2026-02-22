@@ -98,12 +98,19 @@ export default function LoginPage() {
           <p className="text-center text-[var(--color-text-secondary)] text-helper">
             Secure authentication powered by Supabase
           </p>
-          <p className="text-center text-helper">
+          <p className="text-center text-helper space-x-3">
             <Link
               to="/privacy"
               className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] underline underline-offset-2 transition-colors"
             >
               Privacy Policy
+            </Link>
+            <span className="text-[var(--color-divider)]">·</span>
+            <Link
+              to="/terms"
+              className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] underline underline-offset-2 transition-colors"
+            >
+              Terms of Use
             </Link>
           </p>
         </div>

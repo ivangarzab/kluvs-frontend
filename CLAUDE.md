@@ -34,11 +34,13 @@ src/
 │   ├── DiscussionsTimeline.tsx
 │   └── MembersTable.tsx
 ├── content/
-│   └── privacy-policy.md   # Privacy policy content (edit this to update the policy)
+│   ├── privacy-policy.md   # Privacy policy content (edit this to update the policy)
+│   └── terms-of-use.md     # Terms of use content (edit this to update the terms)
 ├── contexts/
 │   └── AuthContext.tsx      # Authentication state management
 ├── pages/
-│   └── PrivacyPolicy.tsx   # Public /privacy route (shell only — content lives in content/)
+│   ├── PrivacyPolicy.tsx   # Public /privacy route (shell only — content lives in content/)
+│   └── TermsOfUse.tsx      # Public /terms route (shell only — content lives in content/)
 ├── types/
 │   └── index.ts             # TypeScript type definitions
 ├── App.tsx                  # Root component with routing + auth
@@ -142,6 +144,7 @@ The app uses React Router v7 (`BrowserRouter`) in `App.tsx`.
 
 ### Route Structure
 - `/privacy` — Public, no auth required → `src/pages/PrivacyPolicy.tsx`
+- `/terms` — Public, no auth required → `src/pages/TermsOfUse.tsx`
 - `/*` — All other routes → `AuthProvider > AppContent` (login or dashboard)
 
 **Key rule:** `AuthProvider` is scoped only to `/*`. Public pages like `/privacy` never trigger Supabase auth calls.
@@ -156,8 +159,11 @@ The app uses React Router v7 (`BrowserRouter`) in `App.tsx`.
 2. It will automatically be served under the `/*` route (inside AuthProvider)
 3. Wrap tests in `renderWithAuth()` from `src/__tests__/utils/test-utils.tsx`
 
-## Updating the Privacy Policy
-Edit `src/content/privacy-policy.md` directly — it's plain Markdown. No code changes needed. The page at `/privacy` renders it automatically.
+## Updating Legal Pages
+- **Privacy Policy**: edit `src/content/privacy-policy.md` — renders at `/privacy`
+- **Terms of Use**: edit `src/content/terms-of-use.md` — renders at `/terms`
+
+Both are plain Markdown. No code changes needed.
 
 ## Git Branches
 - `main` - Production branch

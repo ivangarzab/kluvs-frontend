@@ -4,6 +4,7 @@ import { ThemeProvider } from './contexts/ThemeContext'
 import ClubsDashboard from './ClubsDashboard'
 import LoginPage from './LoginPage'
 import PrivacyPolicy from './pages/PrivacyPolicy'
+import TermsOfUse from './pages/TermsOfUse'
 
 function AppContent() {
   const { user, loading } = useAuth()
@@ -33,6 +34,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfUse />} />
           <Route
             path="/*"
             element={
