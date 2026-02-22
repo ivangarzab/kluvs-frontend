@@ -1,7 +1,9 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import ClubsDashboard from './ClubsDashboard'
 import LoginPage from './LoginPage'
+import PrivacyPolicy from './pages/PrivacyPolicy'
 
 function AppContent() {
   const { user, loading } = useAuth()
@@ -28,9 +30,19 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <AppContent/>
-      </AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route
+            path="/*"
+            element={
+              <AuthProvider>
+                <AppContent />
+              </AuthProvider>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </ThemeProvider>
   )
 }
